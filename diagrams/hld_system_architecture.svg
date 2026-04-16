@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Agriculture Chatbot High Level System Architecture</title>
+  <desc id="desc">Diagram showing the user, interfaces, Python server, chatbot logic, utility functions, and agriculture data store.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f4ec; }
+      .title { font: 700 28px Arial, sans-serif; fill: #173428; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #5e6d63; }
+      .group { fill: #ffffff; stroke: #cdd8cf; stroke-width: 2; rx: 24; ry: 24; }
+      .group-label { font: 700 18px Arial, sans-serif; fill: #28533f; }
+      .box { fill: #ffffff; stroke: #28533f; stroke-width: 2; rx: 16; ry: 16; }
+      .box-soft { fill: #edf5ef; stroke: #28533f; stroke-width: 2; rx: 16; ry: 16; }
+      .box-warm { fill: #fbf4e3; stroke: #b78b49; stroke-width: 2; rx: 16; ry: 16; }
+      .label { font: 700 18px Arial, sans-serif; fill: #18261d; text-anchor: middle; }
+      .small { font: 400 13px Arial, sans-serif; fill: #4f5d55; text-anchor: middle; }
+      .arrow { stroke: #28533f; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#28533f" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="680" />
+  <text class="title" x="60" y="55">Agriculture Chatbot - High Level Architecture</text>
+  <text class="subtitle" x="60" y="82">Simple view of how the main parts of the project work together</text>
+
+  <rect class="group" x="40" y="120" width="170" height="470" />
+  <text class="group-label" x="125" y="155" text-anchor="middle">User Layer</text>
+  <rect class="box-warm" x="65" y="240" width="120" height="95" />
+  <text class="label" x="125" y="283">User</text>
+  <text class="small" x="125" y="308">Asks farm</text>
+  <text class="small" x="125" y="327">questions</text>
+
+  <rect class="group" x="250" y="120" width="250" height="470" />
+  <text class="group-label" x="375" y="155" text-anchor="middle">Interface Layer</text>
+  <rect class="box" x="290" y="215" width="170" height="105" />
+  <text class="label" x="375" y="255">Website UI</text>
+  <text class="small" x="375" y="282">HTML, CSS, JS</text>
+  <text class="small" x="375" y="301">chat widget</text>
+  <rect class="box" x="290" y="390" width="170" height="105" />
+  <text class="label" x="375" y="430">CLI</text>
+  <text class="small" x="375" y="457">Terminal-based</text>
+  <text class="small" x="375" y="476">chatbot</text>
+
+  <rect class="group" x="540" y="120" width="320" height="470" />
+  <text class="group-label" x="700" y="155" text-anchor="middle">Backend Layer</text>
+  <rect class="box-soft" x="600" y="215" width="200" height="105" />
+  <text class="label" x="700" y="255">Python Web Server</text>
+  <text class="small" x="700" y="282">Serves website</text>
+  <text class="small" x="700" y="301">and API</text>
+  <rect class="box-soft" x="600" y="390" width="200" height="105" />
+  <text class="label" x="700" y="430">Chatbot Logic</text>
+  <text class="small" x="700" y="457">Checks topic and</text>
+  <text class="small" x="700" y="476">creates reply</text>
+
+  <rect class="group" x="900" y="120" width="260" height="470" />
+  <text class="group-label" x="1030" y="155" text-anchor="middle">Data Layer</text>
+  <rect class="box" x="950" y="215" width="160" height="105" />
+  <text class="label" x="1030" y="255">Agriculture Data</text>
+  <text class="small" x="1030" y="282">Crop, soil, weather,</text>
+  <text class="small" x="1030" y="301">fertilizer, tips</text>
+  <rect class="box" x="950" y="390" width="160" height="105" />
+  <text class="label" x="1030" y="430">Utilities</text>
+  <text class="small" x="1030" y="457">Time, random reply,</text>
+  <text class="small" x="1030" y="476">console support</text>
+
+  <path class="arrow" d="M 185 287 L 290 267" />
+  <path class="arrow" d="M 185 287 L 290 442" />
+  <path class="arrow" d="M 460 267 L 600 267" />
+  <path class="arrow" d="M 460 442 L 600 442" />
+  <path class="arrow" d="M 700 320 L 700 390" />
+  <path class="arrow" d="M 800 442 L 950 267" />
+  <path class="arrow" d="M 800 442 L 950 442" />
+  <path class="arrow" d="M 600 267 L 460 267" />
+
+  <text class="small" x="525" y="248">HTTP requests</text>
+  <text class="small" x="525" y="420">Shared logic</text>
+  <text class="small" x="878" y="330">Reads data</text>
+  <text class="small" x="530" y="305">Returns answers</text>
+</svg>

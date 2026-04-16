@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760" role="img" aria-labelledby="title desc">
+  <title id="title">Agriculture Chatbot Low Level Module Design</title>
+  <desc id="desc">Module-level diagram showing web app JavaScript, web server, command handler, utility functions, agriculture data, and CLI.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f4ec; }
+      .title { font: 700 28px Arial, sans-serif; fill: #173428; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #5e6d63; }
+      .group { fill: #ffffff; stroke: #cdd8cf; stroke-width: 2; rx: 24; ry: 24; }
+      .group-label { font: 700 18px Arial, sans-serif; fill: #28533f; }
+      .box { fill: #ffffff; stroke: #28533f; stroke-width: 2; rx: 16; ry: 16; }
+      .box-soft { fill: #edf5ef; stroke: #28533f; stroke-width: 2; rx: 16; ry: 16; }
+      .box-warm { fill: #fbf4e3; stroke: #b78b49; stroke-width: 2; rx: 16; ry: 16; }
+      .label { font: 700 18px Arial, sans-serif; fill: #18261d; text-anchor: middle; }
+      .sub { font: 400 13px Arial, sans-serif; fill: #4f5d55; text-anchor: middle; }
+      .arrow { stroke: #28533f; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#28533f" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1240" height="760" />
+  <text class="title" x="60" y="55">Agriculture Chatbot - Low Level Module Design</text>
+  <text class="subtitle" x="60" y="82">Main code files and their direct interactions</text>
+
+  <rect class="group" x="40" y="120" width="260" height="560" />
+  <text class="group-label" x="170" y="155" text-anchor="middle">Client Modules</text>
+  <rect class="box" x="80" y="220" width="180" height="110" />
+  <text class="label" x="170" y="260">web/app.js</text>
+  <text class="sub" x="170" y="287">Browser chat logic</text>
+  <text class="sub" x="170" y="306">calls API</text>
+  <rect class="box" x="80" y="430" width="180" height="110" />
+  <text class="label" x="170" y="470">chatbot.py</text>
+  <text class="sub" x="170" y="497">CLI loop</text>
+  <text class="sub" x="170" y="516">local history</text>
+
+  <rect class="group" x="350" y="120" width="290" height="560" />
+  <text class="group-label" x="495" y="155" text-anchor="middle">Application Modules</text>
+  <rect class="box-soft" x="400" y="220" width="190" height="110" />
+  <text class="label" x="495" y="260">web_app.py</text>
+  <text class="sub" x="495" y="287">HTTP routing</text>
+  <text class="sub" x="495" y="306">GET and POST handling</text>
+  <rect class="box-soft" x="400" y="430" width="190" height="110" />
+  <text class="label" x="495" y="470">command_handler.py</text>
+  <text class="sub" x="495" y="497">topic detection</text>
+  <text class="sub" x="495" y="516">reply generation</text>
+
+  <rect class="group" x="690" y="120" width="510" height="560" />
+  <text class="group-label" x="945" y="155" text-anchor="middle">Support Modules</text>
+  <rect class="box-warm" x="760" y="220" width="170" height="110" />
+  <text class="label" x="845" y="260">agriculture_data.py</text>
+  <text class="sub" x="845" y="287">static crop, soil,</text>
+  <text class="sub" x="845" y="306">weather data</text>
+  <rect class="box-warm" x="970" y="220" width="170" height="110" />
+  <text class="label" x="1055" y="260">utils.py</text>
+  <text class="sub" x="1055" y="287">time, random reply,</text>
+  <text class="sub" x="1055" y="306">console support</text>
+
+  <path class="arrow" d="M 260 275 L 400 275" />
+  <path class="arrow" d="M 260 485 L 400 485" />
+  <path class="arrow" d="M 495 330 L 495 430" />
+  <path class="arrow" d="M 590 485 L 760 275" />
+  <path class="arrow" d="M 590 485 L 970 275" />
+
+  <text class="sub" x="330" y="257">API calls</text>
+  <text class="sub" x="325" y="468">Direct call</text>
+  <text class="sub" x="525" y="388">Shared logic</text>
+  <text class="sub" x="695" y="362">Imports and uses</text>
+</svg>

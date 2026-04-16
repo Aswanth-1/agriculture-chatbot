@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">Agriculture Chatbot Low Level Data View</title>
+  <desc id="desc">Detailed data view showing command handler using message history, agriculture data tables, irrigation updates, and utility functions.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f4ec; }
+      .title { font: 700 28px Arial, sans-serif; fill: #173428; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #5e6d63; }
+      .center { fill: #28533f; stroke: #173428; stroke-width: 2; rx: 20; ry: 20; }
+      .node { fill: #ffffff; stroke: #28533f; stroke-width: 2; rx: 16; ry: 16; }
+      .node-warm { fill: #fbf4e3; stroke: #b78b49; stroke-width: 2; rx: 16; ry: 16; }
+      .main-text { font: 700 22px Arial, sans-serif; fill: #ffffff; text-anchor: middle; }
+      .label { font: 700 17px Arial, sans-serif; fill: #18261d; text-anchor: middle; }
+      .sub { font: 400 12px Arial, sans-serif; fill: #4f5d55; text-anchor: middle; }
+      .arrow { stroke: #28533f; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#28533f" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1280" height="760" />
+  <text class="title" x="60" y="55">Agriculture Chatbot - Low Level Data View</text>
+  <text class="subtitle" x="60" y="82">Main data used by the command handler</text>
+
+  <rect class="center" x="470" y="270" width="340" height="170" />
+  <text class="main-text" x="640" y="336">command_handler.py</text>
+  <text class="main-text" x="640" y="370">get_bot_response()</text>
+
+  <rect class="node-warm" x="80" y="120" width="220" height="90" />
+  <text class="label" x="190" y="157">User Message</text>
+  <text class="sub" x="190" y="182">current input text</text>
+
+  <rect class="node-warm" x="80" y="520" width="220" height="90" />
+  <text class="label" x="190" y="557">History List</text>
+  <text class="sub" x="190" y="582">previous commands</text>
+
+  <rect class="node" x="960" y="100" width="220" height="90" />
+  <text class="label" x="1070" y="137">crop_status</text>
+  <text class="sub" x="1070" y="162">dictionary</text>
+
+  <rect class="node" x="960" y="220" width="220" height="90" />
+  <text class="label" x="1070" y="257">soil_info</text>
+  <text class="sub" x="1070" y="282">dictionary</text>
+
+  <rect class="node" x="960" y="340" width="220" height="90" />
+  <text class="label" x="1070" y="377">fertilizer</text>
+  <text class="sub" x="1070" y="402">dictionary</text>
+
+  <rect class="node" x="960" y="460" width="220" height="90" />
+  <text class="label" x="1070" y="497">weather and tips</text>
+  <text class="sub" x="1070" y="522">lists of messages</text>
+
+  <rect class="node" x="960" y="580" width="220" height="90" />
+  <text class="label" x="1070" y="617">utilities</text>
+  <text class="sub" x="1070" y="642">time and random choice</text>
+
+  <path class="arrow" d="M 300 165 L 470 305" />
+  <path class="arrow" d="M 300 565 L 470 405" />
+  <path class="arrow" d="M 810 320 L 960 145" />
+  <path class="arrow" d="M 810 340 L 960 265" />
+  <path class="arrow" d="M 810 360 L 960 385" />
+  <path class="arrow" d="M 810 380 L 960 505" />
+  <path class="arrow" d="M 810 400 L 960 625" />
+
+  <text class="sub" x="390" y="205">input</text>
+  <text class="sub" x="390" y="520">history</text>
+  <text class="sub" x="885" y="210">crop topic</text>
+  <text class="sub" x="885" y="275">soil topic</text>
+  <text class="sub" x="885" y="405">fertilizer topic</text>
+  <text class="sub" x="885" y="520">weather, tip, irrigation</text>
+  <text class="sub" x="875" y="640">time and random output</text>
+</svg>

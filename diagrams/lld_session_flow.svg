@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="700" viewBox="0 0 1080 700" role="img" aria-labelledby="title desc">
+  <title id="title">Agriculture Chatbot Session Flow</title>
+  <desc id="desc">State flow for the chat widget from opening the chat to receiving replies and storing history.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f4ec; }
+      .title { font: 700 28px Arial, sans-serif; fill: #173428; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #5e6d63; }
+      .step { fill: #ffffff; stroke: #28533f; stroke-width: 2.5; rx: 18; ry: 18; }
+      .step-soft { fill: #edf5ef; stroke: #28533f; stroke-width: 2.5; rx: 18; ry: 18; }
+      .step-warm { fill: #fbf4e3; stroke: #b78b49; stroke-width: 2.5; rx: 18; ry: 18; }
+      .label { font: 700 18px Arial, sans-serif; fill: #18261d; text-anchor: middle; }
+      .sub { font: 400 13px Arial, sans-serif; fill: #4f5d55; text-anchor: middle; }
+      .arrow { stroke: #28533f; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#28533f" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1080" height="700" />
+  <text class="title" x="60" y="55">Agriculture Chatbot - Session and State Flow</text>
+  <text class="subtitle" x="60" y="82">How the browser keeps temporary chat state during a session</text>
+
+  <rect class="step" x="70" y="290" width="170" height="95" />
+  <text class="label" x="155" y="330">Chat Closed</text>
+  <text class="sub" x="155" y="356">Widget is hidden</text>
+
+  <rect class="step-soft" x="300" y="290" width="170" height="95" />
+  <text class="label" x="385" y="330">Chat Open</text>
+  <text class="sub" x="385" y="356">Welcome loads once</text>
+
+  <rect class="step-warm" x="530" y="290" width="170" height="95" />
+  <text class="label" x="615" y="330">User Sends</text>
+  <text class="sub" x="615" y="356">Message submitted</text>
+
+  <rect class="step-soft" x="760" y="290" width="170" height="95" />
+  <text class="label" x="845" y="330">Waiting</text>
+  <text class="sub" x="845" y="356">Request in progress</text>
+
+  <rect class="step" x="760" y="470" width="170" height="95" />
+  <text class="label" x="845" y="510">Reply Shown</text>
+  <text class="sub" x="845" y="536">Bot answer added</text>
+
+  <rect class="step" x="530" y="470" width="170" height="95" />
+  <text class="label" x="615" y="510">History Saved</text>
+  <text class="sub" x="615" y="536">Message kept in state</text>
+
+  <rect class="step-warm" x="300" y="470" width="170" height="95" />
+  <text class="label" x="385" y="510">Next Question</text>
+  <text class="sub" x="385" y="536">Continue chat or clear</text>
+
+  <path class="arrow" d="M 240 338 L 300 338" />
+  <path class="arrow" d="M 470 338 L 530 338" />
+  <path class="arrow" d="M 700 338 L 760 338" />
+  <path class="arrow" d="M 845 385 L 845 470" />
+  <path class="arrow" d="M 760 518 L 700 518" />
+  <path class="arrow" d="M 530 518 L 470 518" />
+  <path class="arrow" d="M 385 470 L 385 385" />
+  <path class="arrow" d="M 300 518 L 155 385" />
+
+  <text class="sub" x="212" y="318">Open chatbot</text>
+  <text class="sub" x="498" y="318">Type message</text>
+  <text class="sub" x="730" y="318">Send request</text>
+  <text class="sub" x="865" y="425">Receive reply</text>
+  <text class="sub" x="730" y="500">Update UI</text>
+  <text class="sub" x="500" y="500">Store history</text>
+  <text class="sub" x="410" y="426">Ask again</text>
+  <text class="sub" x="200" y="495">Close chat</text>
+</svg>

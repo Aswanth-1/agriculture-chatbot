@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriFlow Assistant</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <a class="brand" href="#overview">
+                <span class="brand-mark">AF</span>
+                <span class="brand-text">
+                    <strong>AgriFlow</strong>
+                    <small>Agriculture support assistant</small>
+                </span>
+            </a>
+
+            <nav class="topbar-nav" aria-label="Primary navigation">
+                <a href="#platform">Platform</a>
+                <a href="#assistant">Assistant</a>
+            </nav>
+
+            <button id="hero-open-chat-top" class="topbar-button" type="button">Open Assistant</button>
+        </header>
+
+        <main class="site-main">
+            <section id="overview" class="hero">
+                <div class="hero-copy">
+                    <p class="eyebrow">Agriculture Decision Support</p>
+                    <h1>Professional farm guidance in one focused workspace.</h1>
+                    <p class="lead">
+                        AgriFlow brings crop updates, soil information, irrigation checks, fertilizer guidance,
+                        weather responses, and practical farm advice into a single assistant experience.
+                    </p>
+
+                    <div class="hero-actions">
+                        <button id="hero-open-chat" class="primary-button" type="button">Launch Chatbot</button>
+                        <a class="secondary-link" href="#platform">View platform overview</a>
+                    </div>
+
+                    <div class="hero-stats">
+                        <article class="stat-card">
+                            <span>Coverage</span>
+                            <strong>8 core topics</strong>
+                            <p>including crops, soil, irrigation, weather, fertilizer, tips, time, and history</p>
+                        </article>
+                        <article class="stat-card">
+                            <span>Experience</span>
+                            <strong>Typing and quick answers</strong>
+                            <p>type your own farm question or tap a suggested prompt to get a result right away</p>
+                        </article>
+                    </div>
+                </div>
+
+                <aside class="hero-panel">
+                    <div class="hero-panel-card">
+                        <p class="panel-label">Operations overview</p>
+                        <h2>Built for day-to-day farm questions</h2>
+                        <ul class="status-list">
+                            <li>Crop status snapshots for common crops</li>
+                            <li>Soil and fertilizer reference support</li>
+                            <li>Weather, irrigation, and time-based quick checks</li>
+                            <li>Prompt chips and quick actions for common requests</li>
+                        </ul>
+                        <div class="hero-panel-footer">
+                            <strong>Recommended workflow</strong>
+                            <p>Open the chatbot, type a direct question, or tap a suggestion for an instant response.</p>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+
+            <section id="platform" class="content-section">
+                <div class="section-heading">
+                    <p class="eyebrow">Platform Overview</p>
+                    <h2>A cleaner, more professional presentation of the assistant</h2>
+                    <p>
+                        The site now keeps attention on the parts that matter most: what the assistant covers,
+                        how it helps, and how to start a conversation quickly.
+                    </p>
+                </div>
+
+                <div class="capability-grid">
+                    <article class="capability-card">
+                        <p class="card-tag">Crop Monitoring</p>
+                        <h3>Review crop conditions faster</h3>
+                        <p>Access crop status guidance for rice, wheat, corn, banana, tomato, potato, onion, chili, carrot, and cabbage.</p>
+                    </article>
+                    <article class="capability-card">
+                        <p class="card-tag">Soil and Water</p>
+                        <h3>Check soil and irrigation context</h3>
+                        <p>Surface soil health details, moisture signals, and irrigation responses in a simple chatbot flow.</p>
+                    </article>
+                    <article class="capability-card">
+                        <p class="card-tag">Advisory Support</p>
+                        <h3>Get practical recommendations</h3>
+                        <p>Use the assistant for fertilizer suggestions, farm tips, weather responses, and lightweight planning support.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="assistant" class="assistant-section">
+                <div class="assistant-copy">
+                    <p class="eyebrow">Assistant Access</p>
+                    <h2>Open the chatbot when you need a direct answer</h2>
+                    <p>
+                        The floating chatbot stays available throughout the page so users can move from overview content
+                        into a focused conversation without leaving the site.
+                    </p>
+                    <ul class="assistant-points">
+                        <li>Quick actions for common agriculture requests</li>
+                        <li>Built-in clear chat and history support</li>
+                        <li>Free typing for custom farm questions</li>
+                    </ul>
+                </div>
+
+                <div class="assistant-card">
+                    <p class="card-tag">Suggested prompts</p>
+                    <h3>Start with one of these topics</h3>
+                    <div class="prompt-cloud">
+                        <button class="prompt-chip chat-trigger" type="button">crop status</button>
+                        <button class="prompt-chip chat-trigger" type="button">soil status</button>
+                        <button class="prompt-chip chat-trigger" type="button">weather</button>
+                        <button class="prompt-chip chat-trigger" type="button">fertilizer</button>
+                        <button class="prompt-chip chat-trigger" type="button">irrigation</button>
+                        <button class="prompt-chip chat-trigger" type="button">tip</button>
+                    </div>
+                    <button class="primary-button prompt-open" type="button">Open Chatbot</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="chat-backdrop" class="chat-backdrop"></div>
+
+    <button
+        id="chat-toggle"
+        class="chat-fab"
+        type="button"
+        aria-expanded="false"
+        aria-controls="chat-widget"
+    >
+        <span class="chat-fab-icon">?</span>
+        <span class="chat-fab-text">Chatbot</span>
+    </button>
+
+    <aside id="chat-widget" class="chat-widget" aria-hidden="true">
+        <section class="chat-panel">
+            <div class="chat-header">
+                <div class="chat-header-copy">
+                    <p class="eyebrow">AgriFlow Assistant</p>
+                    <h2>Farm Chatbot</h2>
+                    <p>Type your question directly, or tap a suggested prompt for an instant answer.</p>
+                </div>
+                <div class="chat-header-actions">
+                    <button id="clear-chat" class="ghost-button" type="button">Clear</button>
+                    <button id="close-chat" class="close-button" type="button" aria-label="Close chatbot">x</button>
+                </div>
+            </div>
+
+            <div id="quick-actions" class="quick-actions"></div>
+            <div id="chat-log" class="chat-log" aria-live="polite"></div>
+
+            <form id="chat-form" class="composer">
+                <div class="composer-body">
+                    <label class="sr-only" for="message-input">Ask the agriculture bot a question</label>
+                    <textarea
+                        id="message-input"
+                        name="message"
+                        rows="1"
+                        placeholder="Type your agriculture question here."
+                        required
+                    ></textarea>
+                    <button id="send-button" type="submit">Send</button>
+                </div>
+            </form>
+        </section>
+    </aside>
+
+    <script src="/app.js"></script>
+</body>
+</html>

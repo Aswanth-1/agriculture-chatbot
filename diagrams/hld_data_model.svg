@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="760" viewBox="0 0 1100 760" role="img" aria-labelledby="title desc">
+  <title id="title">Agriculture Chatbot High Level Data Model</title>
+  <desc id="desc">Central agriculture data store connected to crop status, soil information, fertilizer data, weather updates, farming tips, and irrigation updates.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f4ec; }
+      .title { font: 700 28px Arial, sans-serif; fill: #173428; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #5e6d63; }
+      .center { fill: #28533f; stroke: #173428; stroke-width: 2; rx: 24; ry: 24; }
+      .node { fill: #ffffff; stroke: #28533f; stroke-width: 2; rx: 18; ry: 18; }
+      .node-warm { fill: #fbf4e3; stroke: #b78b49; stroke-width: 2; rx: 18; ry: 18; }
+      .main-text { font: 700 24px Arial, sans-serif; fill: #ffffff; text-anchor: middle; }
+      .label { font: 700 18px Arial, sans-serif; fill: #18261d; text-anchor: middle; }
+      .sub { font: 400 13px Arial, sans-serif; fill: #4f5d55; text-anchor: middle; }
+      .link { stroke: #28533f; stroke-width: 3; fill: none; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1100" height="760" />
+  <text class="title" x="60" y="55">Agriculture Chatbot - Data Model</text>
+  <text class="subtitle" x="60" y="82">Static in-memory data used by the chatbot</text>
+
+  <rect class="center" x="390" y="285" width="320" height="170" />
+  <text class="main-text" x="550" y="355">Agriculture Data</text>
+  <text class="main-text" x="550" y="388">Knowledge Base</text>
+
+  <rect class="node" x="110" y="120" width="220" height="90" />
+  <text class="label" x="220" y="160">Crop Status</text>
+  <text class="sub" x="220" y="186">Rice, wheat, corn, tomato</text>
+
+  <rect class="node" x="770" y="120" width="220" height="90" />
+  <text class="label" x="880" y="160">Soil Information</text>
+  <text class="sub" x="880" y="186">Moisture, pH, fertility</text>
+
+  <rect class="node-warm" x="90" y="500" width="240" height="90" />
+  <text class="label" x="210" y="540">Fertilizer Details</text>
+  <text class="sub" x="210" y="566">Recommendations by crop</text>
+
+  <rect class="node-warm" x="770" y="500" width="220" height="90" />
+  <text class="label" x="880" y="540">Weather Updates</text>
+  <text class="sub" x="880" y="566">Sample weather messages</text>
+
+  <rect class="node" x="430" y="580" width="240" height="90" />
+  <text class="label" x="550" y="620">Farming Tips</text>
+  <text class="sub" x="550" y="646">Useful agriculture advice</text>
+
+  <rect class="node" x="430" y="120" width="240" height="90" />
+  <text class="label" x="550" y="160">Irrigation Updates</text>
+  <text class="sub" x="550" y="186">Watering status messages</text>
+
+  <path class="link" d="M 330 210 L 420 300" />
+  <path class="link" d="M 770 210 L 680 300" />
+  <path class="link" d="M 320 500 L 420 440" />
+  <path class="link" d="M 770 500 L 680 440" />
+  <path class="link" d="M 550 580 L 550 455" />
+  <path class="link" d="M 550 210 L 550 285" />
+</svg>

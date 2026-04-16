@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1080" viewBox="0 0 900 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Agriculture Chatbot High Level Process Flow</title>
+  <desc id="desc">Vertical flow showing how a question moves from the user to the backend and back as a response.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f4ec; }
+      .title { font: 700 28px Arial, sans-serif; fill: #173428; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #5e6d63; }
+      .step { fill: #ffffff; stroke: #28533f; stroke-width: 2.5; rx: 20; ry: 20; }
+      .step-alt { fill: #edf5ef; stroke: #28533f; stroke-width: 2.5; rx: 20; ry: 20; }
+      .text { font: 700 22px Arial, sans-serif; fill: #18261d; text-anchor: middle; }
+      .sub { font: 400 14px Arial, sans-serif; fill: #4f5d55; text-anchor: middle; }
+      .arrow { stroke: #28533f; stroke-width: 4; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#28533f" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="900" height="1080" />
+  <text class="title" x="70" y="55">Agriculture Chatbot - Main Process Flow</text>
+  <text class="subtitle" x="70" y="82">Simple end-to-end path for a user question</text>
+
+  <rect class="step" x="220" y="130" width="460" height="95" />
+  <text class="text" x="450" y="170">1. User asks a question</text>
+  <text class="sub" x="450" y="196">Example: weather, crop status, soil condition</text>
+
+  <rect class="step-alt" x="220" y="280" width="460" height="95" />
+  <text class="text" x="450" y="320">2. Website or CLI sends the input</text>
+  <text class="sub" x="450" y="346">The message is passed to the Python backend</text>
+
+  <rect class="step" x="220" y="430" width="460" height="95" />
+  <text class="text" x="450" y="470">3. Backend receives the message</text>
+  <text class="sub" x="450" y="496">The server forwards it to the command handler</text>
+
+  <rect class="step-alt" x="220" y="580" width="460" height="95" />
+  <text class="text" x="450" y="620">4. Command handler checks the topic</text>
+  <text class="sub" x="450" y="646">Keyword matching identifies the correct area</text>
+
+  <rect class="step" x="220" y="730" width="460" height="95" />
+  <text class="text" x="450" y="770">5. System reads data and prepares reply</text>
+  <text class="sub" x="450" y="796">It uses agriculture data or helper functions</text>
+
+  <rect class="step-alt" x="220" y="880" width="460" height="95" />
+  <text class="text" x="450" y="920">6. Answer is shown to the user</text>
+  <text class="sub" x="450" y="946">The chatbot returns one clear text response</text>
+
+  <path class="arrow" d="M 450 225 L 450 280" />
+  <path class="arrow" d="M 450 375 L 450 430" />
+  <path class="arrow" d="M 450 525 L 450 580" />
+  <path class="arrow" d="M 450 675 L 450 730" />
+  <path class="arrow" d="M 450 825 L 450 880" />
+</svg>

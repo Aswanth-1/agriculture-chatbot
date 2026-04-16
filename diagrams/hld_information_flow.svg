@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="420" viewBox="0 0 1260 420" role="img" aria-labelledby="title desc">
+  <title id="title">Agriculture Chatbot High Level Information Flow</title>
+  <desc id="desc">Information flow from user input to frontend, backend, data, and back to the user as a chatbot reply.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f4ec; }
+      .title { font: 700 28px Arial, sans-serif; fill: #173428; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #5e6d63; }
+      .box { fill: #ffffff; stroke: #28533f; stroke-width: 2; rx: 16; ry: 16; }
+      .box-soft { fill: #edf5ef; stroke: #28533f; stroke-width: 2; rx: 16; ry: 16; }
+      .box-warm { fill: #fbf4e3; stroke: #b78b49; stroke-width: 2; rx: 16; ry: 16; }
+      .label { font: 700 18px Arial, sans-serif; fill: #18261d; text-anchor: middle; }
+      .sub { font: 400 13px Arial, sans-serif; fill: #4f5d55; text-anchor: middle; }
+      .arrow { stroke: #28533f; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#28533f" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1260" height="420" />
+  <text class="title" x="60" y="55">Agriculture Chatbot - Information Flow</text>
+  <text class="subtitle" x="60" y="82">How information moves through the system</text>
+
+  <rect class="box-warm" x="40" y="170" width="150" height="90" />
+  <text class="label" x="115" y="208">User Input</text>
+  <text class="sub" x="115" y="233">Question from user</text>
+
+  <rect class="box" x="240" y="170" width="160" height="90" />
+  <text class="label" x="320" y="208">Frontend</text>
+  <text class="sub" x="320" y="233">Website or CLI</text>
+
+  <rect class="box-soft" x="450" y="170" width="170" height="90" />
+  <text class="label" x="535" y="208">Backend API</text>
+  <text class="sub" x="535" y="233">Python server</text>
+
+  <rect class="box-soft" x="670" y="170" width="180" height="90" />
+  <text class="label" x="760" y="208">Command Handler</text>
+  <text class="sub" x="760" y="233">Checks topic</text>
+
+  <rect class="box" x="900" y="170" width="160" height="90" />
+  <text class="label" x="980" y="208">Knowledge Base</text>
+  <text class="sub" x="980" y="233">Agriculture data</text>
+
+  <rect class="box-warm" x="1110" y="170" width="110" height="90" />
+  <text class="label" x="1165" y="208">Reply</text>
+  <text class="sub" x="1165" y="233">Text answer</text>
+
+  <path class="arrow" d="M 190 215 L 240 215" />
+  <path class="arrow" d="M 400 215 L 450 215" />
+  <path class="arrow" d="M 620 215 L 670 215" />
+  <path class="arrow" d="M 850 215 L 900 215" />
+  <path class="arrow" d="M 1060 215 L 1110 215" />
+
+  <text class="sub" x="220" y="196">send</text>
+  <text class="sub" x="430" y="196">request</text>
+  <text class="sub" x="645" y="196">process</text>
+  <text class="sub" x="878" y="196">read</text>
+  <text class="sub" x="1085" y="196">return</text>
+</svg>
