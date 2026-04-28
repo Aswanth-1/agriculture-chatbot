@@ -1,232 +1,159 @@
-const chatWidget = document.getElementById("chat-widget");
-const chatBackdrop = document.getElementById("chat-backdrop");
-const chatToggleButton = document.getElementById("chat-toggle");
-const closeChatButton = document.getElementById("close-chat");
-const chatLog = document.getElementById("chat-log");
-const chatForm = document.getElementById("chat-form");
-const messageInput = document.getElementById("message-input");
-const sendButton = document.getElementById("send-button");
-const quickActionsContainer = document.getElementById("quick-actions");
-const clearChatButton = document.getElementById("clear-chat");
-const openChatButtons = document.querySelectorAll("#hero-open-chat, #hero-open-chat-top, .prompt-open");
-const promptButtons = document.querySelectorAll(".chat-trigger");
+// ============================================================
+//  app.js – AgriFlow Assistant
+//  - toggleChat() / openChat() control the floating widget
+//  - sendText() / sendMessage() handle chatbot messages
+//  - chatHistory stores only user message strings (never bot)
+// ============================================================
 
-const state = {
-    history: [],
-    quickActions: [],
-    welcomeLoaded: false,
-    isOpen: false,
-    isBusy: false,
-};
+var chatHistory = [];
+var chatLoaded  = false;   // load welcome only once
 
-function addMessage(role, text) {
-    const message = document.createElement("article");
-    message.className = `message ${role}`;
-    message.textContent = text;
-    chatLog.appendChild(message);
-    chatLog.scrollTop = chatLog.scrollHeight;
-}
+// ---- open / close widget ---------------------------------
 
-function populateComposer(message = "") {
-    messageInput.value = message;
-    autoResizeTextarea();
-    messageInput.focus();
-
-    const cursorPosition = message.length;
-    messageInput.setSelectionRange(cursorPosition, cursorPosition);
-}
-
-function autoResizeTextarea() {
-    messageInput.style.height = "auto";
-    messageInput.style.height = `${Math.min(messageInput.scrollHeight, 180)}px`;
-}
-
-function setBusy(isBusy) {
-    state.isBusy = isBusy;
-    sendButton.disabled = isBusy;
-    messageInput.disabled = isBusy;
-    clearChatButton.disabled = isBusy;
-    sendButton.textContent = isBusy ? "Sending..." : "Send";
-}
-
-function setChatOpen(isOpen) {
-    state.isOpen = isOpen;
-    document.body.classList.toggle("chat-open", isOpen);
-    chatWidget.setAttribute("aria-hidden", String(!isOpen));
-    chatToggleButton.setAttribute("aria-expanded", String(isOpen));
+function toggleChat() {
+    var widget = document.getElementById('chatWidget');
+    var isOpen = widget.classList.contains('open');
 
     if (isOpen) {
-        window.setTimeout(() => {
-            messageInput.focus();
-        }, 120);
+        widget.classList.remove('open');
+    } else {
+        widget.classList.add('open');
+        // load welcome message the first time chat is opened
+        if (!chatLoaded) {
+            chatLoaded = true;
+            loadWelcome();
+        }
+        // focus input
+        setTimeout(function () {
+            document.getElementById('userInput').focus();
+        }, 250);
     }
 }
 
-async function loadWelcomeMessage(forceReset = false) {
-    if (forceReset) {
-        state.welcomeLoaded = false;
-        chatLog.innerHTML = "";
-    }
-
-    if (state.welcomeLoaded) {
-        return;
-    }
-
-    try {
-        const response = await fetch("/api/welcome");
-
-        if (!response.ok) {
-            throw new Error("Welcome request failed.");
+// called by hero button and contact button
+function openChat() {
+    var widget = document.getElementById('chatWidget');
+    if (!widget.classList.contains('open')) {
+        widget.classList.add('open');
+        if (!chatLoaded) {
+            chatLoaded = true;
+            loadWelcome();
         }
-
-        const data = await response.json();
-        state.quickActions = data.quick_actions || [];
-        renderQuickActions();
-        addMessage("bot", data.message || "Welcome to the agriculture chatbot.");
-        state.welcomeLoaded = true;
-    } catch (error) {
-        if (!chatLog.childElementCount) {
-            addMessage("bot", "The chatbot could not load right now. Please try again.");
-        }
+        setTimeout(function () {
+            document.getElementById('userInput').focus();
+        }, 250);
     }
 }
 
-function renderQuickActions() {
-    quickActionsContainer.innerHTML = "";
-
-    state.quickActions.forEach((action) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "quick-action";
-        button.textContent = action;
-        button.addEventListener("click", async () => {
-            if (state.isBusy) {
-                return;
+// ---- init ------------------------------------------------
+window.onload = function () {
+    // Enter key to send
+    document.getElementById('userInput')
+        .addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
-
-            await openChatWidget(action, true);
         });
-        quickActionsContainer.appendChild(button);
-    });
-}
+};
 
-async function openChatWidget(initialMessage = "", autoSubmit = false) {
-    setChatOpen(true);
-    await loadWelcomeMessage();
-
-    if (initialMessage) {
-        if (autoSubmit) {
-            await submitMessage(initialMessage);
-            return;
-        }
-
-        populateComposer(initialMessage);
-    }
-}
-
-function closeChatWidget() {
-    setChatOpen(false);
-}
-
-async function submitMessage(message) {
-    const trimmedMessage = message.trim();
-
-    if (!trimmedMessage || state.isBusy) {
-        return;
-    }
-
-    if (!state.isOpen) {
-        setChatOpen(true);
-    }
-
-    addMessage("user", trimmedMessage);
-    const requestHistory = [...state.history];
-    setBusy(true);
-
-    try {
-        const response = await fetch("/api/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                message: trimmedMessage,
-                history: requestHistory,
-            }),
+// ---- load welcome from /api/welcome ----------------------
+function loadWelcome() {
+    fetch('/api/welcome')
+        .then(function (res) {
+            if (!res.ok) throw new Error('Server returned ' + res.status);
+            return res.json();
+        })
+        .then(function (data) {
+            if (data && data.message) {
+                appendMessage('bot', data.message);
+            }
+            if (data && Array.isArray(data.quick_actions)) {
+                buildQuickActions(data.quick_actions);
+            }
+        })
+        .catch(function (err) {
+            console.error('Welcome load error:', err);
+            appendMessage('bot',
+                'Welcome to AgriFlow Assistant.\n' +
+                'Type "help" to see available commands.');
         });
-
-        if (!response.ok) {
-            throw new Error("Chat request failed.");
-        }
-
-        const data = await response.json();
-        addMessage("bot", data.reply || "I could not generate a response.");
-    } catch (error) {
-        addMessage("bot", "The website could not reach the chatbot server. Please try again.");
-    } finally {
-        state.history.push(trimmedMessage);
-        setBusy(false);
-        populateComposer("");
-    }
 }
 
-chatToggleButton.addEventListener("click", async () => {
-    if (state.isOpen) {
-        closeChatWidget();
-        return;
-    }
-
-    await openChatWidget();
-});
-
-closeChatButton.addEventListener("click", closeChatWidget);
-chatBackdrop.addEventListener("click", closeChatWidget);
-
-openChatButtons.forEach((button) => {
-    button.addEventListener("click", async () => {
-        await openChatWidget();
+// ---- build quick-action buttons --------------------------
+function buildQuickActions(actions) {
+    var container = document.getElementById('quickActions');
+    container.innerHTML = '';
+    actions.forEach(function (label) {
+        var btn = document.createElement('button');
+        btn.className = 'quick-btn';
+        btn.textContent = label;
+        btn.onclick = function () { sendText(label); };
+        container.appendChild(btn);
     });
-});
+}
 
-promptButtons.forEach((button) => {
-    button.addEventListener("click", async () => {
-        if (state.isBusy) {
-            return;
+// ---- called by Send button -------------------------------
+function sendMessage() {
+    var input = document.getElementById('userInput');
+    var text  = input.value.trim();
+    if (text === '') return;
+    input.value = '';
+    sendText(text);
+}
+
+// ---- core send function ----------------------------------
+function sendText(text) {
+    if (!text || text.trim() === '') return;
+    var message = text.trim();
+
+    appendMessage('user', message);
+
+    var btn = document.getElementById('sendBtn');
+    btn.disabled = true;
+
+    fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            message: message,
+            history: chatHistory.slice()   // copy, strings only
+        })
+    })
+    .then(function (res) {
+        if (!res.ok) throw new Error('HTTP error: ' + res.status);
+        return res.json();
+    })
+    .then(function (data) {
+        if (data !== null &&
+            data !== undefined &&
+            typeof data.reply === 'string') {
+
+            appendMessage('bot', data.reply);
+            chatHistory.push(message);   // only user message
+
+        } else {
+            console.error('Unexpected response:', data);
+            appendMessage('error', 'Received an unexpected response.');
         }
-
-        const promptText = button.textContent || "";
-        await openChatWidget(promptText, true);
+    })
+    .catch(function (err) {
+        console.error('Chat fetch error:', err);
+        appendMessage('error',
+            'Could not reach the server.\n' +
+            'Make sure web_app.py is running.');
+    })
+    .finally(function () {
+        btn.disabled = false;
+        document.getElementById('userInput').focus();
     });
-});
+}
 
-chatForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    await submitMessage(messageInput.value);
-});
-
-messageInput.addEventListener("input", autoResizeTextarea);
-
-messageInput.addEventListener("keydown", async (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        await submitMessage(messageInput.value);
-    }
-});
-
-clearChatButton.addEventListener("click", async () => {
-    if (state.isBusy) {
-        return;
-    }
-
-    state.history = [];
-    await loadWelcomeMessage(true);
-    populateComposer("");
-});
-
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && state.isOpen) {
-        closeChatWidget();
-    }
-});
-
-autoResizeTextarea();
+// ---- append message bubble -------------------------------
+function appendMessage(type, text) {
+    var chatBox = document.getElementById('chatBox');
+    var div     = document.createElement('div');
+    div.className   = 'message ' + type;
+    div.textContent = text;          // textContent = safe, no XSS
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}

@@ -1,0 +1,481 @@
+
+
+
+Yenepoya Institute of Arts, Science,
+Commerce and Management
+Final Project Report
+on
+Design and Development of Natural Language Interface
+for Agriculture Infrastructure
+
+
+
+
+Student Name:  Aswanth M O
+Register Number:  [Your Register Number]
+Programme:  BCA (Artificial Intelligence, Cloud Computing, and DevOps)
+Industry Mentor:  [Mentor Name]
+Guided By:  Mr. Praveen
+Academic Year:  2025–2026
+
+.  DECLARATION
+I, Aswanth M O, hereby declare that the project entitled "Design and Development of Natural Language Interface for Agriculture Infrastructure" submitted to Yenepoya Institute of Arts, Science, Commerce and Management in partial fulfilment of the requirements for the award of the degree of Bachelor of Computer Applications (Artificial Intelligence, Cloud Computing, and DevOps) is a record of original work done by me under the guidance of Mr. Praveen.
+I further declare that this project has not been submitted for the award of any degree or diploma in any other institution or university. All sources of information and references are duly acknowledged.
+
+
+Place:  Mangalore
+Date:   April 2026
+Signature of Student
+Aswanth M O
+
+.  CERTIFICATE
+This is to certify that the project entitled "Design and Development of Natural Language Interface for Agriculture Infrastructure" submitted by Aswanth M O (Register Number: [Your Register Number]) is a bonafide record of work carried out under my supervision during the academic year 2025–2026, in partial fulfilment of the requirements for the award of the degree of Bachelor of Computer Applications (Artificial Intelligence, Cloud Computing, and DevOps) at Yenepoya Institute of Arts, Science, Commerce and Management.
+This project has not been submitted in part or full for any other degree or diploma in this institution or any other institution.
+
+
+
+
+Internal Guide
+Mr. Praveen
+Yenepoya Institute of Arts, Science,
+Commerce and Management
+Head of Department
+Department of Computer Applications
+Yenepoya Institute of Arts, Science,
+Commerce and Management
+
+.  ACKNOWLEDGEMENT
+I would like to express my sincere gratitude to all those who provided support, motivation, and guidance throughout the completion of this project.
+I am deeply thankful to Mr. Praveen, my internal guide, for his continuous encouragement, insightful feedback, and patient guidance at every stage of this project. His expertise and mentorship were invaluable in shaping the direction and quality of this work.
+I extend my heartfelt thanks to my Industry Mentor for sharing practical insights and real-world perspective that enriched this project significantly.
+I am grateful to the Management and faculty of Yenepoya Institute of Arts, Science, Commerce and Management for providing the necessary infrastructure, resources, and academic environment that made this project possible.
+I also thank IBM Innovation Centre for Education and NihonCommunicationSolutions (NCS) for their collaboration and support through the academic internship programme.
+Finally, I am thankful to my family and friends for their moral support and encouragement throughout this journey.
+
+
+
+Aswanth M O
+BCA (AI, Cloud Computing, and DevOps)
+Yenepoya Institute of Arts, Science, Commerce and Management
+
+.  ABSTRACT
+This project presents the design and development of a Natural Language Interface for Agriculture Infrastructure, implemented as a Python-based chatbot that supports both a command-line interface (CLI) and a browser-accessible web application. The system is designed to assist farmers and agricultural workers by providing instant, conversational access to information on crop status, soil health, fertilizer recommendations, weather updates, irrigation management, and practical farming tips.
+The project follows a modular architecture comprising five core Python modules: the CLI entry point, the web server, the chatbot logic handler, the agriculture data store, and a set of utility helper functions. A lightweight Python HTTP server facilitates web communication using RESTful API endpoints, while a simple HTML, CSS, and JavaScript frontend delivers an accessible browser-based chat interface.
+The chatbot employs keyword-based topic detection to understand user queries and respond with structured, emoji-enhanced messages drawn from pre-defined in-memory data structures. The system does not rely on any external database or cloud API, making it suitable for rapid deployment in low-connectivity rural environments.
+Testing was conducted through systematic scenario-based manual evaluation covering all supported topics, edge cases such as empty input, and interface consistency between the web and CLI versions. The results confirm that the system performs reliably and responds accurately within its defined scope.
+The project demonstrates key full-stack development principles, including shared backend logic, RESTful API design, stateless request handling, and lightweight frontend integration. It provides a strong foundation for future enhancements such as multilingual support, AI-powered natural language processing, real-time sensor integration, and mobile application development.
+Keywords: Agriculture Chatbot, Natural Language Interface, Python, REST API, Keyword Matching, Web Application, CLI, Farming Information System.
+
+.  TABLE OF CONTENTS
+Declaration	ii
+Certificate	iii
+Acknowledgement	iv
+Abstract	v
+Table of Contents	vi
+List of Figures	vii
+List of Tables	viii
+1.  Executive Summary	1
+2.  Background	4
+    2.1  Aim and Objectives	5
+    2.2  Technologies Used	6
+    2.3  Hardware Architecture	7
+    2.4  Software Architecture	8
+3.  System Design	10
+    3.1  Application Design	10
+    3.2  Process Flow	12
+    3.3  Information Flow	14
+    3.4  Components Design	15
+    3.5  Key Design Considerations	17
+    3.6  API Catalogue	18
+4.  Data Design	20
+    4.1  Data Model	20
+    4.2  Data Access Mechanism	22
+    4.3  Data Retention Policies	23
+    4.4  Data Migration	24
+5.  Interfaces	25
+6.  State and Session Management	27
+7.  System Requirements	29
+    7.1  Functional Requirements	29
+    7.2  User Requirements	30
+    7.3  Environmental Requirements	31
+8.  Implementation	32
+9.  Testing	37
+10. Non-Functional Requirements	40
+    10.1  Security Aspects	40
+    10.2  Performance Aspects	41
+11. Conclusions	43
+12. Further Development or Research	44
+13. References	46
+14. Appendix	47
+
+.  LIST OF FIGURES
+Figure 1: High-Level System Architecture Diagram	11
+Figure 2: Process Flow Diagram	13
+Figure 3: Information Flow Diagram	14
+Figure 4: Component Interaction Diagram	16
+Figure 5: Data Model Diagram	21
+Figure 6: Session State Flow Diagram	28
+Figure 7: Web Interface Screenshot – Chat View	34
+Figure 8: CLI Interface Screenshot	35
+
+.  LIST OF TABLES
+Table 1: Module Summary	15
+Table 2: API Catalogue	18
+Table 3: Data Structures Overview	20
+Table 4: Functional Test Scenarios	38
+Table 5: Non-Functional Requirements Summary	42
+
+1.  EXECUTIVE SUMMARY
+This project presents the design and development of a Natural Language Interface for Agriculture Infrastructure — a conversational chatbot system built entirely in Python that provides farming-related guidance through both a web browser interface and a terminal-based command-line interface. The project was developed as part of the BCA programme in Artificial Intelligence, Cloud Computing, and DevOps at Yenepoya Institute of Arts, Science, Commerce and Management, in collaboration with IBM Innovation Centre for Education and NihonCommunicationSolutions (NCS).
+Agriculture remains the backbone of the Indian economy, yet millions of small and marginal farmers lack timely access to actionable information on crop management, soil health, weather, and best farming practices. Traditional extension services are constrained by limited personnel, geographic reach, and slow response times. A conversational digital interface that can be deployed at low cost and without internet dependency addresses this gap directly.
+The system developed in this project is called AgriFlow Assistant. It accepts natural language queries from farmers and responds with structured, easy-to-understand information on ten topic areas: crop status, soil conditions, fertilizer recommendations, weather updates, irrigation guidance, practical farming tips, current time, and command history. Responses are enriched with emojis and plain-text formatting to ensure clarity even on basic display devices.
+Architecturally, the project is divided into a small number of well-defined Python modules. The command_handler.py module forms the core intelligence of the system, applying keyword-based topic detection to classify user input and select the appropriate response. The agriculture_data.py module stores all domain knowledge as Python dictionaries and lists, making data maintenance straightforward. The web_app.py module implements a lightweight HTTP server using Python's built-in libraries, exposing RESTful API endpoints for the web frontend. The chatbot.py module provides the CLI interaction loop. Shared utility functions are maintained in utils.py.
+The web frontend, consisting of standard HTML, CSS, and JavaScript files, communicates with the backend through two API endpoints: GET /api/welcome for initial greeting and quick-action buttons, and POST /api/chat for conversational query processing. The entire system operates without any external database, third-party API calls, or cloud service dependency, making it deployable on any machine running Python 3.
+Development followed an iterative approach, beginning with the data module and core logic, then building the CLI interface, followed by the web server and frontend integration. Manual testing was carried out across all supported topics, edge cases, and interface variants to verify correctness and consistency.
+The project successfully achieves its core objectives: providing instant, accurate, and accessible farming guidance through a conversational interface; demonstrating clean software architecture with shared backend logic; and establishing a robust foundation for future enhancements including multilingual support, AI-powered natural language understanding, IoT sensor integration, and mobile application development.
+In summary, the AgriFlow Assistant demonstrates how lightweight, well-structured Python applications can deliver meaningful value to agricultural communities without requiring expensive infrastructure or complex technology stacks. This report documents the complete design, implementation, testing, and evaluation of the system in accordance with academic project guidelines.
+
+2.  BACKGROUND
+Agriculture supports the livelihoods of more than half of India's working population and contributes significantly to national food security. Despite its importance, the sector faces persistent challenges: limited access to timely advisory services, low digital literacy among farmers, poor connectivity in rural areas, and the high cost of expert consultation. Studies have consistently shown that access to timely and accurate information significantly improves crop yields, reduces input wastage, and increases farm profitability.
+The rapid proliferation of affordable smartphones and basic internet connectivity, even in semi-rural areas, has created an opportunity to deliver digital advisory services directly to farmers. Conversational interfaces — chatbots — are particularly well suited to this context because they mimic natural dialogue, require no special training to operate, and can be deployed on platforms that farmers already use, such as web browsers and messaging applications.
+Existing agricultural information systems in India, such as Kisan Call Centre, mKisan, and various state-level portals, provide valuable services but are often constrained by language barriers, the need for expert human intermediaries, and limited availability outside business hours. A software-based conversational system that can respond instantly at any time of day without human intervention addresses these limitations directly.
+This project was undertaken to explore how a simple, modular Python application can serve as the backbone of such an agricultural advisory chatbot. Rather than relying on machine learning models or large language models — which require significant computational resources and training data — the system uses structured keyword matching and pre-defined knowledge bases. This approach ensures predictable, reliable responses and makes the system easy to maintain and extend without specialist AI expertise.
+2.1.  Aim and Objectives
+The primary aim of this project is to design, develop, and evaluate a natural language interface for agriculture infrastructure that enables farmers and agricultural workers to obtain instant, accurate, and actionable farming guidance through a conversational chatbot accessible via both a web browser and a command-line terminal.
+The specific objectives of the project are as follows:
+To design and implement a modular Python-based chatbot system with clearly separated responsibilities for data storage, logic processing, interface delivery, and utility functions.
+To develop a keyword-based natural language understanding component capable of classifying user queries into defined topic categories and generating appropriate responses.
+To create a comprehensive agriculture knowledge base covering crop status, soil health, fertilizer recommendations, weather updates, irrigation guidance, and farming tips.
+To implement a lightweight Python HTTP web server that exposes RESTful API endpoints for web-based interaction without external framework dependencies.
+To build a browser-accessible frontend using standard HTML, CSS, and JavaScript that presents a clean chat interface with quick-action buttons.
+To ensure that both the web and CLI interfaces share the same backend logic, maintaining consistency of responses across interaction modes.
+To conduct systematic manual testing covering all supported topics, edge cases, and interface variants to verify correctness and reliability.
+To document the system design, implementation, and evaluation in sufficient detail to support future enhancement and academic review.
+2.2.  Technologies Used
+The project uses a carefully selected set of lightweight technologies that minimise external dependencies while demonstrating key software development concepts.
+2.2.1.  Python 3.x
+Python is the primary programming language for all backend components. It was selected for its readability, extensive standard library, rapid development capability, and widespread availability across operating systems. The project uses only Python's built-in modules — http.server, json, datetime, random, pathlib, and mimetypes — for the web server, requiring no third-party Python packages for core functionality.
+2.2.2.  HTML5, CSS3, and JavaScript (ES6)
+The web frontend is built using standard web technologies. HTML5 structures the page content, CSS3 provides styling and layout for the chat widget and quick-action buttons, and JavaScript ES6 handles dynamic interactions, API calls using the Fetch API, and real-time chat display updates. No frontend framework is used, keeping the interface lightweight and compatible with any modern browser.
+2.2.3.  Python Built-in HTTP Server
+The Python http.server module provides the web server infrastructure. The BaseHTTPRequestHandler class is extended to implement custom GET and POST request handling, static file serving, and JSON API responses. This approach avoids the need for Flask, Django, or any other web framework.
+2.3.  Hardware Architecture
+The current implementation is designed for single-machine deployment, making it suitable for local demonstration, academic submission, and small-scale field testing. The hardware architecture is intentionally simple.
+On the client side, any modern web browser — including Chrome, Firefox, Edge, or Safari — is used to render the HTML interface and execute the JavaScript chat application. The browser communicates with the backend server over localhost using standard HTTP.
+The application server is the same machine running the Python web server process. This server handles both static file serving (HTML, CSS, JavaScript) and API request processing. Since all data is stored in memory as Python data structures, no separate database server is required.
+The minimum recommended hardware specifications for comfortable operation are a dual-core or better processor, at least 2 GB of RAM, and 500 MB of free disk space. The project footprint is small; the total size of all source files is under 100 KB. Network connectivity is not required for local deployment, though it would be needed for future cloud or hosted deployment.
+2.4.  Software Architecture
+The software architecture follows a three-layer model with clear separation of concerns between the presentation layer, the application logic layer, and the data layer.
+The presentation layer encompasses the web frontend (index.html, styles.css, app.js) and the CLI interface (chatbot.py). Both interfaces are responsible solely for capturing user input and displaying responses. They contain no business logic or data access code.
+The application logic layer consists of command_handler.py and web_app.py. The command handler implements all chatbot intelligence, including input validation, topic detection, response generation, and history management. The web server routes HTTP requests to the appropriate handler functions and serialises responses as JSON.
+The data layer comprises agriculture_data.py and the utility functions in utils.py. Agriculture data is stored as Python dictionaries and lists, imported directly by the command handler at module load time. Utility functions provide time retrieval, random selection, and console compatibility helpers.
+Key architectural characteristics include stateless HTTP request handling (each request is independent), shared backend logic (both web and CLI use the same command handler), modular file organisation (each file has a single clear responsibility), and in-memory data storage (no database or file I/O during operation).
+
+3.  SYSTEM DESIGN
+3.1.  Application Design
+The AgriFlow Assistant is structured around four main components that together deliver a complete conversational agriculture advisory service. This section describes each component and the rationale for its design.
+3.1.1.  User Interface Layer
+The system provides two distinct user interfaces that serve different usage contexts. The web interface is a browser-based chat application that presents a welcoming screen with quick-action buttons for common queries, a scrollable chat history area, and a text input field for free-form questions. The CLI interface provides an equivalent interaction model in the terminal, with a name prompt at startup, a help command listing all supported topics, and a simple prompt-response loop. Both interfaces are thin clients that delegate all processing to the shared backend logic.
+3.1.2.  Web Server Layer
+The Python HTTP server layer handles all network communication between the frontend and the backend. It serves static files (HTML, CSS, JavaScript) for the web interface and exposes two JSON API endpoints: GET /api/welcome returns the welcome message and quick-action button labels, and POST /api/chat accepts a user message and optional history array and returns a text reply. The server returns appropriate HTTP error codes (404 for unknown routes, 400 for malformed JSON) to support robust frontend error handling.
+3.1.3.  Chatbot Logic Layer
+The command handler is the intelligence layer of the system. It receives raw user input as a string, normalises it to lowercase, and applies a keyword-based detection function to classify the query into one of nine topic categories: help, exit, crop, soil, fertilizer, weather, tip, irrigation, time, or history. Each category has a dedicated response function that retrieves data from the data layer and formats it as a human-readable string. Unrecognised input results in a polite fallback response prompting the user to type 'help'.
+3.1.4.  Data Layer
+All agriculture domain knowledge is stored in agriculture_data.py as Python dictionaries and lists. Dictionaries are used for structured data where a crop name or soil condition key maps to a descriptive string. Lists are used for collections of equivalent items (weather updates, tips, irrigation statuses) from which a random selection is made at query time. This in-memory approach ensures zero-latency data access and requires no database infrastructure.
+3.2.  Process Flow
+The system follows a simple, linear process flow from user input to response display. Understanding this flow is essential for tracing the execution path during testing and debugging.
+The user opens the web application in a browser or launches the CLI script. The system displays a welcome message and, in the web version, a set of quick-action buttons.
+The user types a question or clicks a quick-action button. In the web version, the JavaScript frontend captures the input and sends an HTTP POST request to the /api/chat endpoint with a JSON body containing the message text and the current chat history array.
+The Python web server receives the request, reads the JSON body, and calls the get_bot_response() function in the command handler, passing the message string and history list as arguments.
+The command handler normalises the input, invokes the detect_topic() function to identify the query category, and calls the appropriate response function.
+The response function reads from the data layer — either returning a complete dictionary-formatted string or selecting a random item from a list — and returns the formatted response string to the command handler.
+The command handler returns the response string to the web server, which serialises it as a JSON object and sends it back to the frontend as an HTTP 200 response.
+The JavaScript frontend receives the JSON response, extracts the reply text, and appends it to the chat history display. The user sees the response immediately without a page reload.
+In the CLI version, steps 2 through 6 are replaced by direct Python function calls within the main loop, bypassing the HTTP layer entirely while using the same command handler and data layer.
+3.3.  Information Flow
+Information flows through the system in a strictly unidirectional manner within each request cycle. The user's message travels from the interface layer to the web server, then to the command handler, then to the data layer, and returns as a response through the same chain in reverse. No data is written back to the data layer during normal operation; all data structures are read-only at runtime.
+The request payload sent from the frontend to the backend contains two fields: message (a string containing the user's input) and history (an array of previous message strings used to support the history command). The response payload contains a single field: reply (a string containing the formatted bot response).
+The welcome API response contains three fields: title (the application name), message (the welcome text), and quick_actions (an array of button label strings). This structure allows the frontend to dynamically render the initial interface without hardcoding any content.
+3.4.  Components Design
+Table 1 below provides a concise summary of each module's role within the system.
+Table 1: Module Summary
+3.5.  Key Design Considerations
+Several design decisions were made deliberately to ensure the system remains simple, maintainable, and appropriate for its intended use context.
+Shared Backend Logic:  The same get_bot_response() function is called by both the web server and the CLI loop. This ensures that responses are identical regardless of the interface used, eliminating the risk of inconsistencies arising from duplicated logic.
+No External Dependencies:  The project uses only Python's standard library for all backend functionality. This means it can be deployed on any machine with Python 3 installed without requiring pip, virtual environments, or internet access during deployment.
+In-Memory Data Storage:  By storing all agriculture data in Python data structures loaded at module import time, the system achieves zero read-latency and eliminates the complexity of database connections, query languages, and schema management.
+Extensibility:  New topic categories can be added by defining additional keywords in detect_topic(), a new response function, and new data entries in agriculture_data.py, without touching any other part of the system.
+Stateless Server:  The web server maintains no server-side session state. All context required for the history command is passed by the frontend in the request body. This simplifies the server significantly and makes the system horizontally scalable in principle.
+3.6.  API Catalogue
+The web server exposes five endpoints. Table 2 below provides the complete API catalogue.
+Table 2: API Catalogue
+
+4.  DATA DESIGN
+4.1.  Data Model
+The project does not use a relational database or any persistent file-based storage. All data is maintained in Python data structures that are loaded into memory when the agriculture_data module is imported. Table 3 below summarises the data structures used.
+Table 3: Data Structures Overview
+The crop_status dictionary currently covers ten crops: Rice, Wheat, Corn, Banana, Tomato, Potato, Onion, Chili, Carrot, and Cabbage. Each entry contains a multi-sentence string describing the current growth stage and providing care recommendations, formatted with relevant emojis for visual clarity.
+The soil_info dictionary covers eleven conditions spanning moisture levels (Low, Optimal, High), pH ranges (Low, Optimal, High), fertility levels (Low, Medium, High), nutrient deficiency, and general soil health improvement advice.
+The fertilizer dictionary covers ten crop-specific entries and four general entries covering organic fertilizers, chemical fertilizers, application timing, and the risks of overuse.
+4.2.  Data Access Mechanism
+The command_handler module imports all data structures from agriculture_data at module load time using standard Python import statements. At runtime, when a response function is called, it accesses the data directly through dictionary lookups or list indexing. For dictionary-based topics (crop status, soil information, fertilizer), the response function iterates over all key-value pairs and concatenates them into a formatted multi-line string. For list-based topics (weather, tips, irrigation), the response function uses Python's built-in random.choice() function — wrapped in the get_random() helper — to select and return a single item.
+There is no database connection, no file I/O, no network call, and no external API invocation during normal operation. All data access is confined to in-memory Python object lookups, ensuring sub-millisecond response times for all queries.
+4.3.  Data Retention Policies
+The system does not implement any form of persistent data storage for user interactions. Chat history in the web interface is stored exclusively in the browser's JavaScript memory as an array of message strings. This array is cleared when the user refreshes or closes the browser tab. History is never written to disk, never sent to a server for storage, and never retained beyond the current browser session.
+In the CLI interface, command history is stored as a Python list in the main() function's local scope. It accumulates entries throughout the session and is discarded when the program exits — either through the exit command or keyboard interrupt.
+The agriculture data itself (crop status, soil information, fertilizer recommendations, etc.) is static and defined at code authoring time. It does not change during runtime and is therefore not subject to retention policies in the conventional sense. Any updates to the data require modification of the agriculture_data.py source file and a restart of the application.
+4.4.  Data Migration
+Data migration is not applicable to the current version of the system because all data is statically defined in source code. No user-generated data is persisted, and no existing data needs to be transferred between storage systems.
+However, several migration pathways have been identified for future versions of the system. The agriculture data could be migrated from Python source code to JSON files, allowing non-technical users to update crop information, soil thresholds, and fertilizer recommendations without modifying code. Further evolution could move this data to a relational database such as SQLite or PostgreSQL, enabling dynamic updates through an administrative interface and supporting more sophisticated query filtering. Integration with external agricultural data APIs — such as weather services or government crop advisory systems — would enable real-time data rather than static pre-defined content.
+
+5.  INTERFACES
+The AgriFlow Assistant provides two primary user interfaces and one programmatic interface, each serving a different interaction context. This chapter describes each interface in detail.
+5.1.  Web Interface
+The web interface is the primary interface for users with access to a modern web browser. It is served by the Python HTTP server and accessible at http://127.0.0.1:8000 when the web_app.py module is running. The interface consists of three integrated sections.
+The header section displays the application name (AgriFlow Assistant) and a brief description of available topics. Below the header, a chat stream area displays the conversation history in a scrollable container, with bot messages distinguished from user input by visual styling. At the bottom of the page, a set of quick-action buttons allows users to trigger common queries — including Help, Crop Status, Soil Status, Fertilizer, Weather, Irrigation, Tip, Time, and History — with a single click, without typing. A text input field and send button allow free-form text queries.
+The JavaScript frontend (app.js) manages all client-side state, including the current chat history array. On page load, it calls the /api/welcome endpoint to retrieve the welcome message and quick-action labels, populating the initial interface dynamically. Each user interaction triggers an asynchronous fetch call to /api/chat, sending the message and history as JSON. The response is appended to the chat display without refreshing the page.
+The interface is intentionally lightweight, using no JavaScript framework or library. All styling is provided by a single CSS file (styles.css) that applies consistent typography, colour, and layout across the chat widget and quick-action section.
+5.2.  Command-Line Interface
+The CLI interface is provided for users who prefer a terminal-based interaction, for system administrators, and for testing and debugging purposes. It is launched by running python chatbot.py from the project directory.
+On startup, the CLI prompts the user to enter their name. If no name is provided, it defaults to 'Farmer'. The system then greets the user by name and displays a prompt to type 'help' for a list of available commands. The interaction proceeds through a continuous prompt-response loop in which the user types a command or question at the 'You: ' prompt and the bot responds at the 'Bot: ' label.
+The CLI maintains a local history list that records all commands typed during the session. This list is passed to the get_bot_response() function on each call, enabling the history command to display all previous inputs. The session ends when the user types 'exit' or 'quit', which triggers a farewell message and breaks the main loop.
+Unicode handling is managed by the configure_console() and print_console() helper functions in utils.py, which catch UnicodeEncodeError exceptions and substitute ASCII equivalents for terminals that do not support Unicode. This ensures compatibility with older Windows command prompts and restricted terminal environments.
+5.3.  Backend API Interface
+The backend API interface is a programmatic interface used internally by the JavaScript frontend to communicate with the Python server. It can also be used by developers for integration testing, automation, or future mobile client development.
+All API communication uses the HTTP protocol with JSON-encoded request and response bodies. The Content-Type header must be set to application/json for POST requests. Error responses use standard HTTP status codes: 400 for malformed or missing request data and 404 for unknown endpoints. The server does not implement authentication, CORS headers, or rate limiting in its current form, as it is designed for local deployment.
+
+6.  STATE AND SESSION MANAGEMENT
+State and session management in the AgriFlow Assistant follows a deliberately simple model that keeps the backend stateless while delegating all session context management to the client side. This design decision aligns with REST architectural principles and simplifies the server implementation significantly.
+6.1.  Web Session State
+In the web interface, all session state is maintained in the browser's JavaScript runtime through a simple array variable that accumulates message strings as the conversation progresses. When the user sends a message, the current history array is included in the POST request body to the /api/chat endpoint. The backend processes the message in the context of this history (specifically for the history command) and returns a response without storing any information server-side. The history array is updated in the frontend after each successful response.
+This approach means that refreshing the page clears the conversation history, as the JavaScript array is re-initialised. No cookies, local storage, or server-side sessions are used. Each page load is a completely fresh interaction.
+6.2.  CLI Session State
+In the CLI interface, session state is managed through the command_history list defined in the main() function. This list grows throughout the session as commands are appended after each successful response. The list is passed by reference to get_bot_response() on each call, allowing the history command to display all previous inputs at any point in the session. The list is discarded when the program exits.
+6.3.  Backend Statefulness
+The backend server process (web_app.py) is entirely stateless with respect to individual user sessions. The MyHandler class that extends BaseHTTPRequestHandler does not maintain any instance variables that persist across requests. Each HTTP request is handled independently, with no memory of previous requests from the same client.
+The only state maintained by the running server process is the imported Python modules (agriculture_data, command_handler, utils) and their in-memory data structures. These are shared across all requests and are read-only during normal operation, making the system safe for concurrent use by multiple clients without race conditions on the data layer.
+6.4.  Caching
+The system does not implement explicit server-side caching. Since all agriculture data is already in memory and response generation involves only dictionary lookups and string concatenation, query response times are inherently low (sub-millisecond for data retrieval) without the need for a caching layer.
+Static files (HTML, CSS, JavaScript) served by the web server may be cached by the browser based on standard HTTP caching headers. The current server implementation does not set explicit Cache-Control headers, so browsers use their default caching behaviour.
+
+7.  SYSTEM REQUIREMENTS
+7.1.  Functional Requirements
+The system must fulfil the following functional requirements to be considered complete and usable.
+The system must accept free-form text input from users through both the web interface and the CLI interface.
+The system must correctly classify queries into the following topic categories: help, crop status, soil information, fertilizer recommendations, weather updates, irrigation status, farming tips, current time, command history, and exit.
+The system must return a formatted, informative response for each supported topic within one second of receiving a query.
+The system must display crop status information for all ten supported crops: Rice, Wheat, Corn, Banana, Tomato, Potato, Onion, Chili, Carrot, and Cabbage.
+The system must provide soil information covering moisture levels, pH ranges, fertility levels, nutrient deficiency, and general soil health guidance.
+The system must provide fertilizer recommendations for crop-specific and general scenarios including organic, chemical, timing, overuse, and balanced fertilization.
+The system must return a random weather update message for weather queries.
+The system must return a random farming tip for tip queries.
+The system must return a random irrigation status message for irrigation queries.
+The system must display the current date and time for time queries.
+The system must display all previously entered commands for history queries.
+The system must return a polite fallback message for unrecognised input.
+The system must terminate gracefully when the user types 'exit' or 'quit'.
+The web interface must provide quick-action buttons for all major topic categories.
+The web API must return appropriate HTTP status codes for error conditions.
+7.2.  User Requirements
+The system must meet the following requirements from the perspective of the end user.
+The interface must be operable without prior training or technical knowledge — a farmer who has never used a computer before should be able to conduct a successful query within the first minute of use.
+The chat interface must display responses in plain, readable text with clear visual distinction between user messages and bot responses.
+The quick-action buttons must be clearly labelled and accessible with a single click or tap.
+The system must handle empty input gracefully, prompting the user to enter a query rather than crashing or returning an error.
+Response messages must be concise yet complete, providing enough information to be actionable without overwhelming the user.
+The CLI interface must display a clear prompt at all times so the user knows when the system is waiting for input.
+7.3.  Environmental Requirements
+The system must operate correctly in the following environment.
+Operating System: Windows 10 or later, macOS 10.15 or later, or any modern Linux distribution (Ubuntu 20.04 or later recommended).
+Python Version: Python 3.8 or later (Python 3.10+ recommended for optimal compatibility).
+Browser: Any modern web browser supporting JavaScript ES6 and the Fetch API, including Chrome 80+, Firefox 75+, Edge 80+, and Safari 13+.
+Network: Local network access (localhost) is sufficient for the current version. No internet connection is required.
+Disk Space: At least 10 MB of free disk space for the project files.
+Memory: At least 256 MB of available RAM for the Python process.
+
+8.  IMPLEMENTATION
+This chapter describes the implementation of each module in the AgriFlow Assistant system, explaining the key design decisions and notable code patterns used in each component.
+8.1.  Agriculture Data Module (agriculture_data.py)
+The agriculture_data module is the simplest and most self-contained component of the system. It defines five Python data structures — crop_status, soil_info, fertilizer, weather_updates, and tips — as module-level variables that are accessible to any importing module.
+Each dictionary key is a descriptive string (crop name or condition identifier) that serves as a look-up key from the command handler. Each value is a carefully crafted descriptive string that combines factual agricultural information with actionable recommendations. Emoji characters are used throughout to add visual interest and make the responses more engaging on displays that support Unicode.
+The lists (weather_updates and tips) each contain eight entries covering distinct scenarios. Random selection from these lists ensures that repeated queries for the same topic return varied responses, making the interaction feel less mechanical.
+8.2.  Command Handler Module (command_handler.py)
+The command_handler module is the core intelligence layer of the system. It imports all data from agriculture_data and implements six categories of functions.
+8.2.1.  Topic Detection
+The detect_topic() function normalises the user input to lowercase, splits it into individual words, and checks for the presence of topic-specific keywords using Python's 'in' operator on a list. The function checks topics in a priority order designed to minimise false positives: history is checked first (because 'history' could theoretically appear in other contexts), followed by crop, soil, fertilizer, weather, tip, irrigation, and time. If no keyword matches, the function returns None, which triggers the fallback response.
+This keyword-based approach is simple, deterministic, and transparent. While it lacks the nuance of machine learning-based natural language processing, it is entirely sufficient for the constrained topic set of the current system and requires no training data or model inference overhead.
+8.2.2.  Response Functions
+Each topic category has a dedicated response function. For dictionary-based topics, the function iterates over the dictionary items and builds a multi-line string using Python f-strings. For list-based topics, it calls get_random() to select and return a single item. The time function uses Python's datetime.datetime.now() to retrieve and format the current system time.
+8.2.3.  History Management
+The show_history() function takes the command_history list as an argument and formats it as a numbered list. The list is passed in from the calling context (either the CLI main loop or the web server request handler) rather than being stored in the command handler itself, maintaining the module's statelessness.
+8.2.4.  Welcome Payload
+The build_welcome_payload() function returns a Python dictionary containing the application title, welcome message, and a list of nine quick-action label strings. This dictionary is serialised to JSON by the web server and used by the frontend to populate the initial interface. Separating this payload construction into a named function makes it testable in isolation and easy to modify without touching the server code.
+8.3.  Web Server Module (web_app.py)
+The web_app module defines a custom HTTP request handler class (MyHandler) that extends Python's BaseHTTPRequestHandler. The class overrides the do_GET() and do_POST() methods to implement the five API endpoints.
+The do_GET() method inspects the request path and routes to the appropriate handler: the welcome API for /api/welcome, static file serving for /, /styles.css, and /app.js, and a 404 JSON error response for any other path. Static files are served by reading the file as bytes from the web/ subdirectory and writing the content to the response with the appropriate MIME type determined by Python's mimetypes module.
+The do_POST() method handles the /api/chat endpoint. It reads the Content-Length header to determine the request body size, reads and decodes the body as UTF-8, parses it as JSON, extracts the message and history fields, and calls get_bot_response(). The reply string is then wrapped in a JSON object and sent back to the client. Malformed JSON returns a 400 error. The method also validates that the history field is a list, substituting an empty list if it is not.
+The send_json() helper method centralises response serialisation, avoiding code duplication across the do_GET() and do_POST() handlers. The log_message() method is overridden to suppress the default access log output, keeping the server terminal clean during operation.
+The main() function creates an HTTPServer instance bound to localhost on port 8000 and calls serve_forever() within a try-except block that catches KeyboardInterrupt to allow graceful shutdown.
+8.4.  CLI Module (chatbot.py)
+The chatbot module implements the terminal-based interface. The main() function calls configure_console() to set up any required terminal settings, prints a welcome banner, prompts for the user's name, greets the user, and enters the main interaction loop.
+The interaction loop calls console_input() to display the 'You: ' prompt and capture input, handling UnicodeEncodeError exceptions on terminals with limited character set support. If the input is empty, the loop continues without calling the bot. Otherwise, it calls get_bot_response() and prints the result with the 'Bot: ' label. The input is then appended to the command_history list. If should_exit() returns True, the loop breaks.
+8.5.  Utility Module (utils.py)
+The utils module provides four helper functions. The random_response() function uses random.randint() to select a random index from a list and return the corresponding item. The current_time() function returns the current datetime formatted as a readable string. The print_console() and console_input() functions wrap Python's built-in print() and input() with UnicodeEncodeError handling, encoding the text as ASCII and ignoring unrepresentable characters as a fallback. The configure_console() function is a placeholder for any platform-specific terminal setup that might be required in future versions. The greet_user() function prints a personalised greeting message.
+
+9.  TESTING
+Testing was performed through systematic manual scenario evaluation covering all supported topic categories, edge cases, and both interface variants. No automated test suite was implemented in the current version; all testing was conducted by direct interaction with the running system.
+9.1.  Functional Test Scenarios
+Table 4 below documents the key functional test scenarios, the expected outcome for each, and the observed result during testing.
+Table 4: Functional Test Scenarios
+9.2.  Interface Consistency Tests
+To verify that both interfaces produce identical responses for the same inputs, a set of queries was submitted to both the web interface and the CLI interface and the responses compared. The following queries were tested: 'crop', 'soil', 'fertilizer', 'weather', 'tip', 'irrigation', 'time', 'help', and 'history'. In all cases, the responses were functionally equivalent — identical for deterministic topics (crop, soil, fertilizer, help, time, history) and structurally identical for random topics (weather, tip, irrigation), with only the selected list item varying between queries.
+9.3.  Edge Case Tests
+Several edge cases were tested to verify robustness of the input handling.
+All-uppercase input (e.g., 'CROP STATUS'): The system correctly normalised to lowercase and returned the crop status response.
+Mixed-case input (e.g., 'Tell me about Soil'): The system correctly detected the 'soil' keyword and returned the soil information response.
+Multi-word queries containing topic keywords (e.g., 'What is the weather today?'): The system correctly extracted the 'weather' keyword and returned a weather response.
+Input with leading and trailing whitespace: The strip() call in get_bot_response() correctly removes whitespace before processing.
+Very long input strings: The system handled long strings without error, processing them through the same keyword detection pipeline.
+Repeated identical queries: The system returned consistent responses for deterministic topics and varied responses for random topics across repeated identical queries.
+9.4.  Web API Tests
+The web API was tested by sending requests directly using a browser developer console. The following scenarios were verified.
+GET /api/welcome: Returned a valid JSON object containing 'title', 'message', and 'quick_actions' fields.
+POST /api/chat with valid JSON body: Returned a valid JSON object containing the 'reply' field.
+POST /api/chat with invalid JSON: Returned HTTP 400 with an error message.
+POST /api/chat with empty body: Returned HTTP 400 (Content-Length of 0 triggers the empty body handler).
+GET /unknown-route: Returned HTTP 404 with an error JSON object.
+9.5.  Known Limitations of Testing
+The current testing approach has several known limitations that should be addressed in future development.
+No automated test suite: All testing is manual and therefore subject to human error and inconsistency. An automated test suite using Python's unittest or pytest framework would provide repeatable, regression-proof verification.
+No load testing: The system has not been tested under concurrent load. The file-based static serving and in-memory data access should support moderate concurrency, but this has not been quantified.
+No cross-browser testing: The web interface was tested primarily in a single browser environment. Comprehensive cross-browser testing covering Chrome, Firefox, Edge, and Safari should be conducted.
+
+10.  NON-FUNCTIONAL REQUIREMENTS
+10.1.  Security Aspects
+Although the system is designed for local deployment and is not intended for public internet access in its current form, several security considerations have been incorporated into the design.
+All user input is treated as plain text throughout the processing pipeline. The command handler performs no HTML rendering or execution of user-supplied strings, eliminating the risk of cross-site scripting (XSS) attacks in the web interface. The chatbot responses are returned as JSON strings and inserted into the chat display as text content (not innerHTML) by the JavaScript frontend, preventing script injection through response content.
+The web server returns user input only indirectly (as part of the history display), not as raw echo. The JSON serialisation library (Python's built-in json module) safely escapes all special characters in strings before encoding them as JSON.
+The server does not implement authentication or authorisation in its current form, as it is intended for local single-user deployment. Any future public deployment would require the addition of HTTPS, API key authentication, rate limiting, and input length validation.
+Invalid routes return a 404 error response. Malformed JSON in POST requests returns a 400 error. These error responses prevent the server from entering undefined states or exposing internal error traces to clients.
+10.2.  Performance Aspects
+The system is designed for high performance within its intended operational scope of low-concurrency local use.
+Response generation time for all topics is dominated by the time to iterate over dictionary entries or select a list item, both of which are O(n) operations on small, bounded data sets. In practice, all responses are generated in under 1 millisecond of computation time. Network round-trip time over localhost adds negligible overhead, keeping total request-response cycles well under 10 milliseconds in all tested scenarios.
+The web interface renders responses immediately upon receipt without any animation delays or artificial loading states. The quick-action buttons are rendered synchronously from the data received at page load, ensuring they are interactive within the first second of the page loading.
+Memory usage is minimal. The Python process occupies approximately 15–20 MB of RAM for the interpreter and imported modules. The data structures in agriculture_data.py add negligible overhead. The web server itself adds no significant memory overhead beyond the Python process.
+The system is not designed for high-concurrency scenarios (many simultaneous users). Python's http.server module is single-threaded by default, meaning concurrent requests will be queued. For a production deployment serving many users, a WSGI-compatible server such as Gunicorn or a multi-threaded server would be required.
+Table 5: Non-Functional Requirements Summary
+Table 5: Non-Functional Requirements Summary
+
+11.  CONCLUSIONS
+This project has successfully designed, implemented, and evaluated the AgriFlow Assistant — a Natural Language Interface for Agriculture Infrastructure that provides farmers and agricultural workers with instant, conversational access to farming guidance across ten topic areas through both a web browser interface and a command-line terminal.
+The project demonstrates that a well-structured, modular Python application with approximately five hundred lines of source code can deliver a genuinely useful conversational advisory service without relying on complex machine learning infrastructure, cloud APIs, or external database systems. The shared backend logic pattern — in which both the web and CLI interfaces call the same get_bot_response() function — proved particularly effective in ensuring consistency and simplifying maintenance.
+The keyword-based topic detection approach, while simpler than neural natural language processing, is well-suited to the constrained and well-defined domain of the current system. Users who phrase their queries using common farming vocabulary will consistently receive appropriate and informative responses. The polite fallback for unrecognised input ensures the system remains graceful even when queries fall outside its scope.
+The RESTful API design of the web server, using standard HTTP verbs and JSON payloads, follows industry best practices and positions the system for straightforward integration with future web and mobile clients. The stateless server architecture ensures that the system can serve multiple simultaneous users without session conflicts, even in its current single-threaded implementation.
+Testing confirmed that all functional requirements are met: the system correctly handles all supported topic categories, returns appropriate responses for edge cases including empty input and unrecognised queries, and maintains interface consistency between web and CLI versions. The API endpoints behave as specified, returning correct HTTP status codes for both success and error conditions.
+From an academic perspective, the project successfully fulfils its learning objectives in software design, backend development, API design, frontend integration, and system evaluation. It provides a clear and well-documented example of full-stack Python development that is accessible to students and reviewers at all levels.
+In conclusion, the AgriFlow Assistant is a working, tested, and thoroughly documented agricultural chatbot system that provides immediate practical value and a strong architectural foundation for future development. The system is ready for demonstration, academic submission, and iterative enhancement toward a production-quality deployment.
+
+12.  FURTHER DEVELOPMENT OR RESEARCH
+The AgriFlow Assistant, in its current form, is a functional minimum viable product that demonstrates the core concept effectively. Several significant opportunities for enhancement have been identified during the development and evaluation process.
+12.1.  Technical Enhancements
+Natural Language Processing Integration:  Replacing keyword matching with a trained intent classification model — using libraries such as spaCy, NLTK, or a fine-tuned transformer model — would enable the system to understand paraphrased queries, partial keyword matches, and multi-intent sentences. This would dramatically increase the range of natural language queries the system can handle correctly.
+Multilingual Support:  Adding support for regional Indian languages such as Kannada, Malayalam, Tamil, and Hindi would significantly expand the system's accessibility to farmers who are not comfortable communicating in English. Libraries such as IndicNLP and translation APIs could be leveraged for this purpose.
+Persistent Data Storage:  Migrating the agriculture knowledge base from Python source code to a JSON file or a database (SQLite for local deployment, PostgreSQL for cloud deployment) would allow non-technical administrators to update crop information, soil thresholds, and fertilizer recommendations without modifying code. A simple administrative web interface could be built for this purpose.
+Real-Time Data Integration:  Integrating with external APIs — weather services (such as OpenWeatherMap), government agricultural advisories (such as ICAR APIs), and IoT sensor data from soil moisture and temperature sensors — would enable the system to provide real-time, location-specific, and data-driven recommendations rather than static pre-defined content.
+Automated Testing Suite:  Implementing a comprehensive automated test suite using Python's unittest or pytest framework would provide regression protection, enable continuous integration, and make future development safer. Tests should cover all topic categories, edge cases, API endpoints, and interface consistency.
+12.2.  User Experience Improvements
+Voice Interface:  Adding a voice input and text-to-speech output capability — using Python's speech_recognition library and a text-to-speech engine — would make the system accessible to farmers with low literacy levels who are more comfortable speaking than typing.
+Mobile Application:  Developing a native Android application (using Kivy or a React Native wrapper around the existing web interface) would allow farmers to access the system on their smartphones without needing a laptop or desktop computer.
+Image-Based Query Support:  Allowing farmers to photograph their crops or soil and submit the image as a query could enable disease identification and deficiency diagnosis through computer vision models, significantly expanding the scope of the advisory service.
+Personalisation:  Implementing a user registration and profile system would allow the chatbot to remember a farmer's crops, location, and preferences across sessions, enabling personalised recommendations that account for regional conditions and cropping patterns.
+12.3.  Research Directions
+Evaluating the effectiveness of keyword-based versus machine learning-based intent classification in the specific context of agricultural chatbots for low-literacy users.
+Investigating optimal UI design patterns for agricultural chatbot interfaces targeting semi-literate rural users in India, with focus on icon-based navigation and voice interaction.
+Exploring the feasibility of a hybrid offline-online architecture in which the chatbot operates with pre-cached data when internet connectivity is unavailable and synchronises with live data sources when connectivity is available.
+Studying the adoption patterns and impact of conversational agricultural advisory systems on crop yield, input cost, and farmer confidence in technology.
+
+13.  REFERENCES
+1.  Python Software Foundation. (2024). Python 3 Documentation. Retrieved from https://docs.python.org/3/
+2.  Python Software Foundation. (2024). http.server — HTTP servers. Python 3 Standard Library. Retrieved from https://docs.python.org/3/library/http.server.html
+3.  Python Software Foundation. (2024). json — JSON encoder and decoder. Python 3 Standard Library. Retrieved from https://docs.python.org/3/library/json.html
+4.  Python Software Foundation. (2024). datetime — Basic date and time types. Python 3 Standard Library. Retrieved from https://docs.python.org/3/library/datetime.html
+5.  MDN Web Docs. (2024). Fetch API. Mozilla Developer Network. Retrieved from https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+6.  MDN Web Docs. (2024). JavaScript Reference (ES6). Mozilla Developer Network. Retrieved from https://developer.mozilla.org/en-US/docs/Web/JavaScript
+7.  Fielding, R. T. (2000). Architectural Styles and the Design of Network-based Software Architectures (Doctoral dissertation). University of California, Irvine. (REST principles)
+8.  W3C. (2024). HTML5 Specification. World Wide Web Consortium. Retrieved from https://www.w3.org/TR/html52/
+9.  W3C. (2024). CSS3 Specification. World Wide Web Consortium. Retrieved from https://www.w3.org/Style/CSS/
+10.  Indian Council of Agricultural Research (ICAR). (2024). Crop Production Guide. Retrieved from https://icar.org.in/
+11.  Government of India, Ministry of Agriculture and Farmers Welfare. (2024). National Agriculture Portal. Retrieved from https://www.agricoop.nic.in/
+12.  Bird, S., Klein, E., & Loper, E. (2009). Natural Language Processing with Python. O'Reilly Media.
+13.  Lutz, M. (2013). Learning Python (5th ed.). O'Reilly Media.
+14.  Grinberg, M. (2018). Flask Web Development (2nd ed.). O'Reilly Media.
+15.  IBM Innovation Centre for Education. (2026). Project Guidelines and Evaluation Framework. Yenepoya Institute of Arts, Science, Commerce and Management.
+
+14.  APPENDIX
+14.1.  Source File List
+The following source files constitute the complete codebase of the AgriFlow Assistant project.
+chatbot.py — CLI entry point and main interaction loop
+web_app.py — Python HTTP web server and API endpoint handler
+command_handler.py — Core chatbot logic: topic detection and response generation
+agriculture_data.py — Agriculture domain knowledge base (dictionaries and lists)
+utils.py — Shared utility functions (time, random, console helpers)
+web/index.html — Web interface HTML structure
+web/styles.css — Web interface CSS styling
+web/app.js — Web interface JavaScript application logic
+README.md — Project overview and setup instructions
+.gitignore — Git version control exclusions
+14.2.  API Request and Response Examples
+14.2.1.  GET /api/welcome Response
+The following is an example JSON response from the /api/welcome endpoint:
+{ "title": "AgriFlow Assistant", "message": "Welcome to AgriFlow Assistant. You can ask about crops, soil, fertilizer, weather, irrigation, tips, time or history. Type help to see all commands.", "quick_actions": ["Help", "Crop status", "Soil status", "Fertilizer", "Weather", "Irrigation", "Tip", "Time", "History"] }
+14.2.2.  POST /api/chat Request
+The following is an example JSON request body sent to the /api/chat endpoint:
+{ "message": "what is the weather today", "history": ["help", "crop status"] }
+14.2.3.  POST /api/chat Response
+The following is an example JSON response from the /api/chat endpoint:
+{ "reply": "Weather Update: ☀️ Sunny weather expected today. 🌱 Ideal for field work and irrigation." }
+14.3.  Setup and Run Instructions
+The following steps describe how to set up and run the AgriFlow Assistant on a local machine.
+14.3.1.  Prerequisites
+Python 3.8 or later must be installed. Download from https://www.python.org/downloads/
+No additional Python packages are required.
+A modern web browser is required for the web interface.
+14.3.2.  Running the Web Application
+Open a terminal (Command Prompt on Windows, Terminal on macOS/Linux).
+Navigate to the project directory: cd path/to/agriflow-assistant
+Run the web server: python web_app.py
+Open a browser and navigate to: http://127.0.0.1:8000
+The AgriFlow Assistant web interface will load automatically.
+To stop the server, press Ctrl+C in the terminal.
+14.3.3.  Running the CLI Application
+Open a terminal and navigate to the project directory.
+Run the CLI chatbot: python chatbot.py
+Enter your name when prompted. Press Enter to use the default name 'Farmer'.
+Type queries at the 'You: ' prompt. Type 'help' to see all available commands.
+Type 'exit' or 'quit' to end the session.
+14.4.  Weekly Progress Reports
+The following weekly progress reports document the development timeline of the AgriFlow Assistant project.
+Week 1 (Week commencing: [Date])
+Targets: Understand project requirements and set up development environment.
+Progress: Reviewed project brief, set up Python environment, created project folder structure, and initialised Git repository.
+Future Plans: Begin implementation of agriculture_data.py and core command handler logic.
+Week 2 (Week commencing: [Date])
+Targets: Implement the agriculture data module and basic command handler.
+Progress: Completed agriculture_data.py with crop_status, soil_info, fertilizer, weather_updates, and tips data structures. Implemented initial version of command_handler.py with detect_topic() and basic response functions.
+Future Plans: Implement the CLI interface and utility functions.
+Week 3 (Week commencing: [Date])
+Targets: Build the CLI interface and utility functions.
+Progress: Completed chatbot.py with the main interaction loop, history tracking, and graceful exit. Implemented utils.py with print_console(), console_input(), greet_user(), and configure_console() functions.
+Future Plans: Implement the Python web server and API endpoints.
+Week 4 (Week commencing: [Date])
+Targets: Implement the web server and RESTful API.
+Progress: Completed web_app.py with MyHandler class handling GET and POST requests for /api/welcome, /api/chat, and static file serving. Tested API endpoints using browser developer console.
+Future Plans: Build the web frontend (HTML, CSS, JavaScript).
+Week 5 (Week commencing: [Date])
+Targets: Develop the web frontend.
+Progress: Completed web/index.html with chat stream layout and quick-action buttons. Completed web/styles.css with consistent styling. Completed web/app.js with Fetch API integration, chat history management, and dynamic interface updates.
+Future Plans: Conduct end-to-end testing and prepare documentation.
+Week 6 (Week commencing: [Date])
+Targets: Conduct testing, write documentation, and finalise submission.
+Progress: Completed systematic manual testing across all topic categories and edge cases. Prepared high-level and low-level design documents. Completed final project report. Pushed final codebase to GitHub repository.
+Future Plans: Present project to guide and industry mentor for review.

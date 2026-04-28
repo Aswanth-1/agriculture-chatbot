@@ -1,178 +1,176 @@
-import re
+import datetime
+import random
 
-from agriculture_data import crop_status, fertilizer, soil_info, tips, weather_updates
-from utils import current_time, random_response
+from agriculture_data import crop_status, soil_info, fertilizer, weather_updates, tips
 
+# irrigation status messages
 IRRIGATION_UPDATES = [
-    "Irrigation system active.",
-    "Water supply normal.",
-    "Irrigation scheduled for evening.",
+    "Irrigation system is running.",
+    "Water supply is normal.",
+    "Irrigation is scheduled for evening.",
 ]
 
-TOPIC_DISPLAY_NAMES = {
-    "crop": "Crop status",
-    "soil": "Soil status",
-    "fertilizer": "Fertilizer",
-    "weather": "Weather",
-    "irrigation": "Irrigation",
-    "tip": "Tip",
-    "time": "Time",
-    "history": "History",
-}
 
-QUICK_ACTION_ORDER = (
-    "crop",
-    "soil",
-    "fertilizer",
-    "weather",
-    "irrigation",
-    "tip",
-    "time",
-    "history",
-)
-
-TOPIC_KEYWORDS = (
-    ("history", frozenset({"history"})),
-    ("crop", frozenset({"crop", "crops"})),
-    ("soil", frozenset({"soil", "soils"})),
-    ("fertilizer", frozenset({"fertilizer", "fertilizers", "compost", "manure"})),
-    ("weather", frozenset({"weather", "forecast", "rain", "temperature"})),
-    ("tip", frozenset({"tip", "tips", "advice"})),
-    ("irrigation", frozenset({"irrigation", "irrigate", "water", "watering"})),
-    ("time", frozenset({"time", "clock"})),
-)
-
-def _format_section(title, data):
-    lines = [title]
-
-    for label, value in data.items():
-        formatted_label = str(label).replace("_", " ")
-        lines.append(f"- {formatted_label}: {value}")
-
-    return "\n".join(lines)
+def get_current_time():
+    now = datetime.datetime.now()
+    return now.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _format_history(command_history):
-    if not command_history:
-        return "Command History:\n- No commands yet."
-
-    lines = ["Command History:"]
-
-    for index, command in enumerate(command_history, start=1):
-        lines.append(f"{index}. {command}")
-
-    return "\n".join(lines)
+def get_random(data):
+    return random.choice(data)
 
 
-def get_help_text():
-    lines = ["Available Commands", "- Help"]
-    lines.extend(f"- {TOPIC_DISPLAY_NAMES[topic]}" for topic in QUICK_ACTION_ORDER)
-    lines.append("- Exit")
-    return "\n".join(lines)
+def show_help():
+    help_text = """Available Commands:
+- help
+- crop
+- soil
+- fertilizer
+- weather
+- irrigation
+- tip
+- time
+- history
+- exit"""
+    return help_text
 
 
-def get_quick_actions():
-    return ["Help", *(TOPIC_DISPLAY_NAMES[topic] for topic in QUICK_ACTION_ORDER)]
+def show_crop_status():
+    result = "Crop Status:\n"
+    for crop, status in crop_status.items():
+        result += f"- {crop}: {status}\n"
+    return result
 
 
-def _contains_word(user_input, *words):
-    return any(re.search(rf"\b{re.escape(word)}\b", user_input) for word in words)
+def show_soil_info():
+    result = "Soil Information:\n"
+    for key, info in soil_info.items():
+        label = key.replace("_", " ")
+        result += f"- {label}: {info}\n"
+    return result
 
 
-def _extract_words(user_input):
-    return set(re.findall(r"[a-z]+", user_input))
+def show_fertilizer_info():
+    result = "Fertilizer Recommendations:\n"
+    for key, info in fertilizer.items():
+        result += f"- {key}: {info}\n"
+    return result
 
 
-def should_exit(user_input):
-    return _contains_word((user_input or "").lower(), "exit", "quit")
+def show_history(history):
+    if len(history) == 0:
+        return "No commands entered yet."
+    result = "Command History:\n"
+    count = 1
+    for cmd in history:
+        result += f"{count}. {cmd}\n"
+        count += 1
+    return result
 
 
 def get_welcome_message():
-    return (
-        "Welcome to the AgriFlow Assistant.\n"
-        "Ask about crop status, soil, fertilizer, irrigation, weather, farming tips, time, or history. "
-        "You can type your own question or use the suggested prompts to get started."
-    )
+    msg = "Welcome to AgriFlow Assistant.\n"
+    msg += "You can ask about crops, soil, fertilizer, weather, irrigation, tips, time or history.\n"
+    msg += "Type help to see all commands."
+    return msg
 
 
 def build_welcome_payload():
+    quick_actions = ["Help", "Crop status", "Soil status", "Fertilizer",
+                     "Weather", "Irrigation", "Tip", "Time", "History"]
     return {
         "title": "AgriFlow Assistant",
         "message": get_welcome_message(),
-        "quick_actions": get_quick_actions(),
+        "quick_actions": quick_actions
     }
 
 
-def _get_response_by_topic(topic, command_history):
-    if topic == "history":
-        return _format_history(command_history)
+def detect_topic(user_input):
+    # check what the user is asking about using simple keyword check
+    words = user_input.lower().split()
 
-    if topic == "crop":
-        return _format_section("Crop Status:", crop_status)
+    if "history" in words:
+        return "history"
 
-    if topic == "soil":
-        return _format_section("Soil Information:", soil_info)
+    if "crop" in words or "crops" in words:
+        return "crop"
 
-    if topic == "fertilizer":
-        return _format_section("Fertilizer Recommendation:", fertilizer)
+    if "soil" in words:
+        return "soil"
 
-    if topic == "weather":
-        return f"Weather Update: {random_response(weather_updates)}"
+    if "fertilizer" in words or "fertilizers" in words or "compost" in words or "manure" in words:
+        return "fertilizer"
 
-    if topic == "tip":
-        return f"Agriculture Tip: {random_response(tips)}"
+    if "weather" in words or "rain" in words or "temperature" in words or "forecast" in words:
+        return "weather"
 
-    if topic == "irrigation":
-        return random_response(IRRIGATION_UPDATES)
+    if "tip" in words or "tips" in words or "advice" in words:
+        return "tip"
 
-    if topic == "time":
-        return f"Current Time: {current_time()}"
+    if "water" in words or "irrigation" in words or "irrigate" in words or "watering" in words:
+        return "irrigation"
 
-    return None
-
-
-def _detect_topic(user_input):
-    words = _extract_words(user_input)
-
-    for topic, keywords in TOPIC_KEYWORDS:
-        if words.intersection(keywords):
-            return topic
+    if "time" in words or "clock" in words:
+        return "time"
 
     return None
-
-
-def _history_before_current_command(command_history, normalized_input, detected_topic):
-    if detected_topic != "history" or not command_history:
-        return command_history
-
-    last_command = str(command_history[-1]).strip().lower()
-
-    if last_command == normalized_input:
-        return command_history[:-1]
-
-    return command_history
 
 
 def get_bot_response(user_input, command_history=None):
-    normalized_input = (user_input or "").strip().lower()
-    command_history = list(command_history or [])
+    if command_history is None:
+        command_history = []
 
-    if not normalized_input:
-        return "Please type a question so I can help with your farm update."
+    user_input = user_input.strip()
 
-    if _contains_word(normalized_input, "help", "assist", "guide"):
-        return get_help_text()
+    if user_input == "":
+        return "Please type something so I can help you."
 
-    if should_exit(normalized_input):
-        return "Thank you for using the Agriculture Chatbot."
+    lower_input = user_input.lower()
 
-    detected_topic = _detect_topic(normalized_input)
+    # check for help
+    if "help" in lower_input or "assist" in lower_input or "guide" in lower_input:
+        return show_help()
 
-    if detected_topic:
-        history_for_response = _history_before_current_command(command_history, normalized_input, detected_topic)
-        return _get_response_by_topic(detected_topic, history_for_response)
+    # check for exit
+    if "exit" in lower_input or "quit" in lower_input:
+        return "Thank you for using the Agriculture Chatbot. Goodbye!"
 
-    return "Command not recognized. Try 'help' to see what you can ask."
+    # detect topic and return response
+    topic = detect_topic(lower_input)
+
+    if topic == "crop":
+        return show_crop_status()
+
+    elif topic == "soil":
+        return show_soil_info()
+
+    elif topic == "fertilizer":
+        return show_fertilizer_info()
+
+    elif topic == "weather":
+        return "Weather Update: " + get_random(weather_updates)
+
+    elif topic == "tip":
+        return "Farming Tip: " + get_random(tips)
+
+    elif topic == "irrigation":
+        return get_random(IRRIGATION_UPDATES)
+
+    elif topic == "time":
+        return "Current Time: " + get_current_time()
+
+    elif topic == "history":
+        return show_history(command_history)
+
+    else:
+        return "I did not understand that. Type 'help' to see what you can ask."
+
+
+def should_exit(user_input):
+    lower = user_input.lower()
+    if "exit" in lower or "quit" in lower:
+        return True
+    return False
 
 
 def handle_command(user_input, command_history=None):

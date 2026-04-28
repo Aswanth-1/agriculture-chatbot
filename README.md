@@ -1,43 +1,44 @@
-# Natural Language Agriculture Chatbot
+# Agriculture Chatbot
 
-## Overview
+A simple chatbot I built using Python for agriculture related queries.
+It works as both a CLI tool and a website.
 
-This project is a Python agriculture assistant that now supports both:
+## What it does
 
-- a command-line interface
-- a browser-based website
+You can ask the chatbot about:
+- crop status
+- soil conditions
+- fertilizer recommendations
+- weather updates
+- irrigation status
+- farming tips
+- current time
+- command history
 
-The chatbot answers agriculture-related questions about crop status, soil condition, irrigation, weather updates, fertilizer recommendations, farming tips, time, and command history.
+## How to run
 
-## Features
+### Website version
 
-- Website chat interface
-- Command Line Interface (CLI)
-- Natural language style commands
-- Free typing for custom questions
-- Clickable prompts for instant answers
-- Keyword matching
-- Agriculture knowledge base
-- Randomized weather and tip responses
-- Reusable chatbot logic for the website
+```
+python web_app.py
+```
 
-## Technologies Used
+Then open http://127.0.0.1:8000 in your browser.
 
-- Python
-- HTML
-- CSS
-- JavaScript
-- Built-in Python HTTP server
-- Built-in `unittest` test framework
+### CLI version
 
-## Example Commands
+```
+python chatbot.py
+```
 
-```text
+## Commands you can type
+
+```
 help
-crop status
-soil status
-weather
+crop
+soil
 fertilizer
+weather
 irrigation
 tip
 time
@@ -45,24 +46,16 @@ history
 exit
 ```
 
-## How to Run
+## Files
 
-### Run the Website
+- chatbot.py - main CLI file
+- web_app.py - runs the website
+- command_handler.py - handles user input and gives responses
+- agriculture_data.py - stores all the agriculture information
+- utils.py - helper functions
 
-```bash
-python web_app.py
-```
+## Tech used
 
-Then open `http://127.0.0.1:8000` in your browser.
-
-### Run the CLI
-
-```bash
-python chatbot.py
-```
-
-## Run Tests
-
-```bash
-python -m unittest discover -s tests -v
-```
+- Python
+- HTML, CSS, JavaScript
+- Python built-in HTTP server

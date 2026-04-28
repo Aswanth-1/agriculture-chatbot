@@ -1,61 +1,41 @@
 import datetime
 import random
-import sys
 
-CONSOLE_REPLACEMENTS = str.maketrans(
-    {
-        "\u2013": "-",
-        "\u2014": "-",
-        "\u2018": "'",
-        "\u2019": "'",
-        "\u201c": '"',
-        "\u201d": '"',
-        "\u2026": "...",
-        "\u00a0": " ",
-    }
-)
 
 def random_response(data):
-    return random.choice(data)
+    # just picks a random item from the list
+    index = random.randint(0, len(data) - 1)
+    return data[index]
+
 
 def current_time():
-    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.datetime.now()
+    return now.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _get_stream_encoding(stream):
-    return (getattr(stream, "encoding", None) or "").lower()
-
-
-def supports_unicode_output(stream=None):
-    encoding = _get_stream_encoding(stream or sys.stdout)
-    return encoding.startswith("utf") or encoding == "cp65001"
-
-
-def configure_console():
-    for stream in (sys.stdout, sys.stderr):
-        if hasattr(stream, "reconfigure"):
-            try:
-                stream.reconfigure(errors="replace")
-            except ValueError:
-                continue
-
-
-def to_console_text(text, stream=None):
-    normalized = str(text).translate(CONSOLE_REPLACEMENTS)
-
-    if supports_unicode_output(stream):
-        return normalized
-
-    return normalized.encode("ascii", "ignore").decode("ascii")
-
-
-def print_console(text="", end="\n"):
-    print(to_console_text(text), end=end)
+def print_console(text=""):
+    # print to terminal
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        # some terminals don't support special characters
+        cleaned = text.encode("ascii", "ignore").decode("ascii")
+        print(cleaned)
 
 
 def console_input(prompt=""):
-    return input(to_console_text(prompt))
+    # get input from user
+    try:
+        return input(prompt)
+    except UnicodeEncodeError:
+        cleaned = prompt.encode("ascii", "ignore").decode("ascii")
+        return input(cleaned)
+
+
+def configure_console():
+    # nothing special needed for most systems
+    pass
 
 
 def greet_user(name):
-    print_console(f"\nHello {name}! Welcome to the Agriculture Chatbot 🌾")
+    print_console(f"\nHello {name}! Welcome to the Agriculture Chatbot.")

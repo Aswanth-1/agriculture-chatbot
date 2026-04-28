@@ -1,4 +1,4 @@
-# ------------------ CROP STATUS ------------------
+# crop status info
 
 crop_status = {
     "Rice": "🌾 Rice crop is in vegetative stage. 💧 Maintain proper irrigation and add nitrogen fertilizer.",

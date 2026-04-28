@@ -1,126 +1,113 @@
-import argparse
 import json
 import mimetypes
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
 
 from command_handler import build_welcome_payload, get_bot_response
 
-PROJECT_ROOT = Path(__file__).resolve().parent
-WEB_DIR = PROJECT_ROOT / "web"
-STATIC_ROUTES = {
-    "/": WEB_DIR / "index.html",
-    "/styles.css": WEB_DIR / "styles.css",
-    "/app.js": WEB_DIR / "app.js",
-}
+# paths
+BASE_DIR = Path(__file__).parent
+WEB_DIR = BASE_DIR / "web"
 
 
-class AgricultureWebHandler(BaseHTTPRequestHandler):
+class MyHandler(BaseHTTPRequestHandler):
+
     def do_GET(self):
-        parsed_path = urlparse(self.path)
-        route = parsed_path.path
+        path = self.path
 
-        if route == "/api/welcome":
-            self._send_json(build_welcome_payload())
+        # welcome API
+        if path == "/api/welcome":
+            data = build_welcome_payload()
+            self.send_json(data)
             return
 
-        file_path = STATIC_ROUTES.get(route)
-
-        if file_path is None or not file_path.exists():
-            self._send_json({"error": "Not found."}, status_code=404)
+        # serve index page
+        if path == "/" or path == "/index.html":
+            self.serve_file(WEB_DIR / "index.html")
             return
 
-        self._send_file(file_path)
+        # serve css
+        if path == "/styles.css":
+            self.serve_file(WEB_DIR / "styles.css")
+            return
+
+        # serve js
+        if path == "/app.js":
+            self.serve_file(WEB_DIR / "app.js")
+            return
+
+        # not found
+        self.send_json({"error": "page not found"}, 404)
 
     def do_POST(self):
-        parsed_path = urlparse(self.path)
+        path = self.path
 
-        if parsed_path.path != "/api/chat":
-            self._send_json({"error": "Not found."}, status_code=404)
+        if path != "/api/chat":
+            self.send_json({"error": "not found"}, 404)
             return
 
-        payload = self._read_json_payload()
+        # read request body
+        length = int(self.headers.get("Content-Length", 0))
+        if length == 0:
+            body = {}
+        else:
+            raw = self.rfile.read(length)
+            try:
+                body = json.loads(raw.decode("utf-8"))
+            except Exception:
+                self.send_json({"error": "bad JSON"}, 400)
+                return
 
-        if payload is None:
-            self._send_json({"error": "Invalid JSON payload."}, status_code=400)
-            return
+        message = str(body.get("message", ""))
+        history = body.get("history", [])
 
-        message = str(payload.get("message", ""))
-        history = payload.get("history", [])
         if not isinstance(history, list):
             history = []
 
-        response = {
-            "reply": get_bot_response(message, history),
-        }
-        self._send_json(response)
+        reply = get_bot_response(message, history)
+        self.send_json({"reply": reply})
 
-    def log_message(self, format_string, *args):
-        return
+    def serve_file(self, filepath):
+        if not filepath.exists():
+            self.send_json({"error": "file not found"}, 404)
+            return
 
-    def _read_json_payload(self):
-        content_length = int(self.headers.get("Content-Length", "0"))
+        content_type = mimetypes.guess_type(str(filepath))[0]
+        if content_type is None:
+            content_type = "text/plain"
 
-        if content_length == 0:
-            return {}
-
-        raw_body = self.rfile.read(content_length)
-
-        try:
-            return json.loads(raw_body.decode("utf-8"))
-        except json.JSONDecodeError:
-            return None
-
-    def _send_file(self, file_path):
-        content_type, _ = mimetypes.guess_type(str(file_path))
-        content_type = content_type or "application/octet-stream"
-        file_bytes = file_path.read_bytes()
-        content_type_header = content_type
-
-        if content_type.startswith("text/") or content_type in {
-            "application/javascript",
-            "application/json",
-            "application/xml",
-            "image/svg+xml",
-        }:
-            content_type_header = f"{content_type}; charset=utf-8"
+        data = filepath.read_bytes()
 
         self.send_response(200)
-        self.send_header("Content-Type", content_type_header)
-        self.send_header("Content-Length", str(len(file_bytes)))
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(data)))
         self.end_headers()
-        self.wfile.write(file_bytes)
+        self.wfile.write(data)
 
-    def _send_json(self, payload, status_code=200):
-        response_body = json.dumps(payload).encode("utf-8")
-
-        self.send_response(status_code)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(response_body)))
+    def send_json(self, data, status=200):
+        body = json.dumps(data).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
         self.end_headers()
-        self.wfile.write(response_body)
+        self.wfile.write(body)
 
-
-def run_server(host="127.0.0.1", port=8000):
-    server = ThreadingHTTPServer((host, port), AgricultureWebHandler)
-    print(f"Agriculture website running at http://{host}:{port}")
-    print("Press Ctrl+C to stop the server.")
-
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        print("\nStopping server...")
-    finally:
-        server.server_close()
+    def log_message(self, format, *args):
+        # disable default logging
+        pass
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run the Agriculture Chatbot website.")
-    parser.add_argument("--host", default="127.0.0.1", help="Host to bind the web server to.")
-    parser.add_argument("--port", type=int, default=8000, help="Port to bind the web server to.")
-    args = parser.parse_args()
-    run_server(args.host, args.port)
+    host = "127.0.0.1"
+    port = 8000
+    server = HTTPServer((host, port), MyHandler)
+    print(f"Server started at http://{host}:{port}")
+    print("Press Ctrl+C to stop.")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nServer stopped.")
+    server.server_close()
 
 
 if __name__ == "__main__":
