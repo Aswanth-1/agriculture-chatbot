@@ -1,5 +1,6 @@
 import json
 import mimetypes
+import webbrowser
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
@@ -10,7 +11,7 @@ BASE_DIR = Path(__file__).parent
 WEB_DIR = BASE_DIR / "web"
 
 
-class MyHandler(BaseHTTPRequestHandler):
+class AgricultureWebHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path
@@ -100,8 +101,11 @@ class MyHandler(BaseHTTPRequestHandler):
 def main():
     host = "127.0.0.1"
     port = 8000
-    server = HTTPServer((host, port), MyHandler)
-    print(f"Server started at http://{host}:{port}")
+    url = f"http://{host}:{port}"
+    server = HTTPServer((host, port), AgricultureWebHandler)
+    print(f"Server started at {url}")
+    print("Opening browser...")
+    webbrowser.open_new(url)
     print("Press Ctrl+C to stop.")
     try:
         server.serve_forever()
@@ -112,3 +116,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+MyHandler = AgricultureWebHandler

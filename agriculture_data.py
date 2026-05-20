@@ -1,131 +1,131 @@
-# crop status info
+import csv
+from collections import defaultdict
+from pathlib import Path
 
-crop_status = {
-    "Rice": "🌾 Rice crop is in vegetative stage. 💧 Maintain proper irrigation and add nitrogen fertilizer.",
-    
-    "Wheat": "🌿 Wheat crop is growing well. 🌾 Harvest expected soon. ⚠️ Monitor for rust disease.",
-    
-    "Corn": "🌽 Corn crop is healthy. 🐛 Pest monitoring is required.",
-    
-    "Banana": "🍌 Banana crop is growing steadily. 💧 Ensure consistent watering.",
-    
-    "Tomato": "🍅 Tomato plants are flowering. 🐛 Pest control is important at this stage.",
-    
-    "Potato": "🥔 Potato crop is nearing harvest. 🚫 Reduce watering before harvesting.",
-    
-    "Onion": "🧅 Onion crop is developing bulbs. 📏 Ensure proper spacing and irrigation.",
-    
-    "Chili": "🌶️ Chili plants are fruiting. 🐜 Watch for aphid attacks.",
-    
-    "Carrot": "🥕 Carrot crop is growing underground. 🌱 Loose soil is essential.",
-    
-    "Cabbage": "🥬 Cabbage heads are forming. 💧 Maintain moisture and protect from pests."
-}
 
-# ------------------ SOIL INFORMATION ------------------
+BASE_DIR = Path(__file__).parent
+CROP_RECOMMENDATION_DATASET = BASE_DIR / "data" / "crop_recommendation_source.csv"
+
+
+def _average(values):
+    return sum(values) / len(values)
+
+
+def _range_text(values, unit=""):
+    suffix = f" {unit}" if unit else ""
+    return f"{min(values):.1f}-{max(values):.1f}{suffix}"
+
+
+def load_crop_recommendation_rows(path=CROP_RECOMMENDATION_DATASET):
+    rows = []
+    with path.open("r", encoding="utf-8", newline="") as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            rows.append(
+                {
+                    "crop": row["Crop"].strip().title(),
+                    "nitrogen": float(row["Nitrogen"]),
+                    "phosphorus": float(row["Phosphorus"]),
+                    "potassium": float(row["Potassium"]),
+                    "temperature": float(row["Temperature"]),
+                    "humidity": float(row["Humidity"]),
+                    "ph": float(row["pH_Value"]),
+                    "rainfall": float(row["Rainfall"]),
+                }
+            )
+    return rows
+
+
+def build_crop_profiles(rows):
+    grouped_rows = defaultdict(list)
+    for row in rows:
+        grouped_rows[row["crop"]].append(row)
+
+    profiles = {}
+    for crop, crop_rows in sorted(grouped_rows.items()):
+        profiles[crop] = {
+            "records": len(crop_rows),
+            "nitrogen_avg": _average([row["nitrogen"] for row in crop_rows]),
+            "phosphorus_avg": _average([row["phosphorus"] for row in crop_rows]),
+            "potassium_avg": _average([row["potassium"] for row in crop_rows]),
+            "temperature_range": _range_text([row["temperature"] for row in crop_rows], "C"),
+            "humidity_range": _range_text([row["humidity"] for row in crop_rows], "%"),
+            "ph_range": _range_text([row["ph"] for row in crop_rows]),
+            "rainfall_range": _range_text([row["rainfall"] for row in crop_rows], "mm"),
+        }
+
+    return profiles
+
+
+def build_crop_status(profiles):
+    crop_messages = {}
+    for crop, profile in profiles.items():
+        crop_messages[crop] = (
+            f"Based on {profile['records']} dataset records, suitable conditions are "
+            f"temperature {profile['temperature_range']}, humidity {profile['humidity_range']}, "
+            f"soil pH {profile['ph_range']}, and rainfall {profile['rainfall_range']}. "
+            f"Average soil nutrients are N {profile['nitrogen_avg']:.1f}, "
+            f"P {profile['phosphorus_avg']:.1f}, K {profile['potassium_avg']:.1f}."
+        )
+    return crop_messages
+
+
+def build_fertilizer_profiles(profiles):
+    fertilizer_messages = {}
+    for crop, profile in profiles.items():
+        fertilizer_messages[crop] = (
+            f"The dataset average nutrient profile for {crop} is "
+            f"N {profile['nitrogen_avg']:.1f}, P {profile['phosphorus_avg']:.1f}, "
+            f"K {profile['potassium_avg']:.1f}. Use this as a reference and confirm exact "
+            f"fertilizer dose with a local soil test."
+        )
+
+    fertilizer_messages["Organic"] = (
+        "Use compost, vermicompost, green manure, or well-decomposed farmyard manure "
+        "to improve soil structure and slow-release nutrients."
+    )
+    fertilizer_messages["Balanced"] = (
+        "Balanced fertilization means supplying N, P, K, and needed micronutrients "
+        "according to crop requirement and soil-test results."
+    )
+
+    return fertilizer_messages
+
+
+crop_recommendation_rows = load_crop_recommendation_rows()
+crop_profiles = build_crop_profiles(crop_recommendation_rows)
+
+crop_status = build_crop_status(crop_profiles)
+fertilizer = build_fertilizer_profiles(crop_profiles)
 
 soil_info = {
-    "Moisture_Low": "💧 Soil moisture is LOW. 🚨 Increase irrigation immediately to prevent crop stress.",
-    
-    "Moisture_Optimal": "🌱 Soil moisture level is OPTIMAL. ✅ Perfect for healthy crop growth.",
-    
-    "Moisture_High": "🌊 Soil is WATERLOGGED. ⚠️ Improve drainage to avoid root rot and damage.",
-    
-    "pH_Low": "⚗️ Soil is ACIDIC (Low pH). ➕ Add lime to balance the pH level.",
-    
-    "pH_Optimal": "⚗️ Soil pH is around 6.5–7. ✅ Ideal for most crops.",
-    
-    "pH_High": "⚗️ Soil is ALKALINE (High pH). ➕ Add organic matter or sulfur to correct it.",
-    
-    "Fertility_Low": "🌾 Soil fertility is LOW. ➕ Add compost or organic manure.",
-    
-    "Fertility_Medium": "🌿 Soil fertility is MODERATE. ⚖️ Balanced fertilization is recommended.",
-    
-    "Fertility_High": "🌱 Soil fertility is HIGH. ⚠️ Avoid over-fertilization.",
-    
-    "Nutrient_Deficiency": "⚠️ Soil lacks essential nutrients (N, P, K). 🧪 Soil testing is recommended.",
-    
-    "Soil_Health": "🌍 Improve soil health using crop rotation 🔄 and organic compost 🪴."
+    "Moisture Low": "Irrigate soon and use mulch where possible. Check that water reaches the crop root zone.",
+    "Moisture High": "Pause irrigation, improve drainage, and watch for root rot or fungal disease.",
+    "pH Low": "Soil is acidic. Add agricultural lime only after checking soil-test recommendations.",
+    "pH High": "Soil is alkaline. Add organic matter and follow local soil-test guidance before correction.",
+    "Nutrient Deficiency": "Test soil for N, P, K, sulphur, zinc, and boron before corrective application.",
+    "Soil Health": "Improve soil health with crop rotation, cover crops, compost, residue retention, and careful tillage.",
 }
-
-# ------------------ FERTILIZER ------------------
-
-fertilizer = {
-    "Rice": "🌾 Use NPK 20-20-20. ➕ Apply nitrogen in split doses for better growth.",
-    
-    "Wheat": "🌿 Use nitrogen-rich fertilizer (e.g., urea). 📈 Boosts plant growth.",
-    
-    "Corn": "🌽 Use NPK 15-15-15. ➕ Provide additional nitrogen supply.",
-    
-    "Banana": "🍌 Apply potassium-rich fertilizer. 🍇 Improves fruit development.",
-    
-    "Tomato": "🍅 Use phosphorus-rich fertilizer during flowering 🌸 stage.",
-    
-    "Potato": "🥔 Use balanced NPK fertilizer for proper tuber development.",
-    
-    "Onion": "🧅 Use nitrogen and potassium fertilizers for healthy bulb growth.",
-    
-    "Organic": "🌿 Use compost, vermicompost, or cow dung 🐄 for organic farming.",
-    
-    "Chemical": "🧪 Chemical fertilizers give quick nutrients ⚡ but must be used carefully.",
-    
-    "Timing": "⏰ Apply fertilizers during early growth stages. 🚫 Avoid overuse.",
-    
-    "Overuse": "⚠️ Overuse of fertilizers can DAMAGE soil health and crops.",
-    
-    "Balanced": "⚖️ Balanced fertilization ensures proper crop growth (NPK)."
-}
-
-# ------------------ WEATHER UPDATES ------------------
 
 weather_updates = [
-    "☀️ Sunny weather expected today. 🌱 Ideal for field work and irrigation.",
-    
-    "⛅ Partly cloudy weather. 🌡️ Mild temperature conditions.",
-    
-    "🌧️ Cloudy with chances of rain. 💧 Plan irrigation carefully.",
-    
-    "⛈️ Heavy rainfall predicted. ⚠️ Ensure proper drainage.",
-    
-    "🔥 High temperature expected. 💧 Increase watering to prevent heat stress.",
-    
-    "❄️ Cool weather expected. 🛡️ Protect crops from cold stress.",
-    
-    "🌬️ Windy conditions. 🌱 Secure young plants properly.",
-    
-    "💦 Humid weather. ⚠️ Monitor crops for fungal diseases."
+    "Sunny and dry conditions are suitable for field work. Irrigate sensitive crops if soil moisture is falling.",
+    "Light rain is possible. Delay irrigation and avoid spraying pesticides just before rainfall.",
+    "Heavy rainfall risk. Clean drainage channels and avoid fertilizer application until the field is workable.",
+    "High temperature expected. Irrigate early morning or evening and protect seedlings from heat stress.",
+    "Humid weather increases fungal disease risk. Improve airflow and scout leaves for early symptoms.",
 ]
 
-# ------------------ EXTRA FARMING TIPS ------------------
-
 tips = [
-    "🔄 Rotate crops every season to maintain soil fertility.",
-    
-    "🌿 Use organic compost for better soil health.",
-    
-    "🚫 Avoid over irrigation to prevent root damage.",
-    
-    "🐛 Monitor pest activity regularly.",
-    
-    "💧 Use drip irrigation to save water.",
-    
-    "🌅 Water crops early morning or evening.",
-    
-    "🌱 Use high-quality seeds for better yield.",
-    
-    "📏 Maintain proper spacing between plants.",
-    
-    "🌾 Remove weeds regularly.",
-    
-    "🌿 Use neem oil for natural pest control.",
-    
-    "🧪 Test soil regularly for better results.",
-    
-    "⚠️ Avoid excessive chemical fertilizers.",
-    
-    "🍂 Use mulching to retain soil moisture.",
-    
-    "♻️ Practice sustainable farming methods.",
-    
-    "🌧️ Ensure proper drainage during rainy season."
+    "Rotate cereals, pulses, and vegetables to break pest cycles and protect soil fertility.",
+    "Inspect fields weekly so pests and nutrient problems are caught before they spread.",
+    "Use certified, healthy seed and choose varieties suited to local climate and soil.",
+    "Remove weeds early because young crops lose yield quickly when competing for water and nutrients.",
+    "Test soil before each major season to plan fertilizer and pH correction accurately.",
+]
+
+irrigation_updates = [
+    "Irrigation system is running. Check field edges to confirm water distribution is even.",
+    "Water supply is normal. Continue the planned irrigation schedule.",
+    "Irrigation is scheduled for evening to reduce evaporation losses.",
+    "Inspect filters, valves, and channels before the next irrigation cycle.",
 ]

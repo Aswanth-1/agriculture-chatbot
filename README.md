@@ -51,8 +51,26 @@ exit
 - chatbot.py - main CLI file
 - web_app.py - runs the website
 - command_handler.py - handles user input and gives responses
-- agriculture_data.py - stores all the agriculture information
+- agriculture_data.py - loads and summarizes the crop recommendation dataset
+- data/crop_recommendation_source.csv - source-backed crop recommendation dataset with soil nutrients, temperature, humidity, pH, rainfall, and crop labels
 - utils.py - helper functions
+
+## Dataset Source
+
+The project uses the public Crop Recommendation dataset originally published on Kaggle and mirrored in a public GitHub repository for direct CSV access.
+
+- Kaggle dataset page: https://www.kaggle.com/datasets/varshitanalluri/crop-recommendation-dataset/data
+- CSV used in this project: https://github.com/nileshiq/Crop-Recommendation/blob/main/Crop_Recommendation.csv
+
+Dataset fields:
+- Nitrogen
+- Phosphorus
+- Potassium
+- Temperature
+- Humidity
+- pH_Value
+- Rainfall
+- Crop
 
 ## Tech used
 

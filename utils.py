@@ -13,23 +13,31 @@ def current_time():
     return now.strftime("%Y-%m-%d %H:%M:%S")
 
 
+def supports_unicode_output(stream):
+    encoding = getattr(stream, "encoding", "") or ""
+    return "utf" in encoding.lower()
+
+
+def to_console_text(text, stream):
+    if supports_unicode_output(stream):
+        return text
+
+    cleaned = text.replace("â€“", "-").replace("–", "-").replace("—", "-")
+    return cleaned.encode("ascii", "ignore").decode("ascii")
+
+
 def print_console(text=""):
     # print to terminal
-    try:
-        print(text)
-    except UnicodeEncodeError:
-        # some terminals don't support special characters
-        cleaned = text.encode("ascii", "ignore").decode("ascii")
-        print(cleaned)
+    import sys
+
+    print(to_console_text(text, sys.stdout))
 
 
 def console_input(prompt=""):
     # get input from user
-    try:
-        return input(prompt)
-    except UnicodeEncodeError:
-        cleaned = prompt.encode("ascii", "ignore").decode("ascii")
-        return input(cleaned)
+    import sys
+
+    return input(to_console_text(prompt, sys.stdout))
 
 
 def configure_console():

@@ -44,15 +44,43 @@ class CommandHandlerTests(unittest.TestCase):
 
         self.assertTrue(response.startswith("Weather Update:"))
 
+    def test_crop_name_returns_specific_crop_status(self):
+        response = get_bot_response("rice", [])
+
+        self.assertTrue(response.startswith("Rice Status:"))
+        self.assertIn("Based on 100 dataset records", response)
+        self.assertIn("Average soil nutrients", response)
+
+    def test_crop_name_works_inside_plain_question(self):
+        response = get_bot_response("tell me about banana", [])
+
+        self.assertTrue(response.startswith("Banana Status:"))
+
+    def test_crop_name_with_crop_topic_returns_specific_status(self):
+        response = get_bot_response("crop rice", [])
+
+        self.assertTrue(response.startswith("Rice Status:"))
+
+    def test_crop_fertilizer_uses_dataset_profile(self):
+        response = get_bot_response("rice fertilizer", [])
+
+        self.assertTrue(response.startswith("Rice Fertilizer:"))
+        self.assertIn("dataset average nutrient profile", response)
+
     def test_plural_topic_words_are_supported(self):
         response = get_bot_response("Do you have any farming tips?", [])
 
         self.assertTrue(response.startswith("Agriculture Tip:"))
 
-    def test_partial_words_do_not_trigger_topic_matches(self):
+    def test_market_price_question_gets_agriculture_response(self):
         response = get_bot_response("watermelon prices", [])
 
-        self.assertEqual(response, "Command not recognized. Try 'help' to see what you can ask.")
+        self.assertTrue(response.startswith("Market Price Advice:"))
+
+    def test_general_agriculture_question_gets_helpful_response(self):
+        response = get_bot_response("how to protect plants from disease", [])
+
+        self.assertTrue(response.startswith("Agriculture Advice:"))
 
     def test_time_substrings_do_not_trigger_topic_matches(self):
         response = get_bot_response("timestamp issue", [])
